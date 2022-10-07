@@ -1,0 +1,30 @@
+[package]
+name = "openweathermap_exporter"
+description = "An aggregator that polls OpenWeatherMap free API data and exposes it in prometheus exposition format."
+version = "0.1.0"
+edition = "2021"
+authors = ["evaneaston"]
+homepage = "https://github.com/evaneaston/openweathermap"
+repository = "https://github.com/evaneaston/openweathermap"
+license = "MIT-0"
+keywords = ["openweathermap", "prometheus", "metrics", "exporter"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+openweathermap_client = { path = "../client" }
+dirs = "4"
+env_logger = "0.9"
+log = "0.4"
+metrics = "0.20.1"
+metrics-exporter-prometheus = { version = "0.11.0", features = [
+    "http-listener",
+] }
+metrics-util = "0.14.0"
+serde = { version = "1.0.143", features = ["derive"] }
+serde_with = { version = "2.0.0", features = ["chrono", "macros"] }
+serde_yaml = "0.9.9"
+thiserror = "1.0.37"
+tokio = { version = "1.20.1", features = [
+    "macros", "net"
+] }
+
