@@ -1,2 +1,3 @@
 /target
 owm_exporter.yaml
+*.code-workspace
