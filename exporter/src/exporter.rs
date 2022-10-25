@@ -64,7 +64,7 @@ impl Exporter {
             for query in self.config.query_iterator() {
                 self.slow_down().await;
 
-                debug!("querying {:?}", query);
+                info!("Getting weather for {:?}", query);
 
                 let start = SystemTime::now();
                 let reading = self.client.fetch_weather(query).await;

@@ -1,57 +1,3 @@
-//!
-//! # Getting Started
-//!
-//! Create a config file.  Start with the the template below or use [the template from the git repo](../../owm_exporter-template.yaml).
-//!
-//! ```bash
-//! RUST_LOG=info cargo run
-//! ```
-//!
-//! ## Template owm_exporter.yaml
-//!
-//! Note that defaults are commented out.
-//!
-//! ```yaml
-//! #listen:
-//! #  address: 0.0.0.0
-//! #  port: 9001
-//!
-//! owm:
-//!   api_key:
-//! #  units: metric # Valid units are standard, metric, imperial
-//! #  language: en
-//!
-//! # The exporter doesn't currently warn if the duration of all the calls exceeds the duration
-//! # of `poll_interval_seconds`.  It's up to you to reconfigure so that all readings can be read
-//! # withing the `poll_interval_seconds` timeframe.  This will probably be updated in a future
-//! # release.
-//!
-//! #poll_interval_seconds: 60
-//! #max_calls_per_minute: 60
-//!
-//! # You can query by [City], [Coord]inates, or [CityId] (aka locations).
-//! # All queries have an optional `display_name` property that, if specified, will be shown in metric's `location` label instead of the name that the OWM API returns for the location.
-//!
-//! cities:
-//!   - name: Bangkok
-//!     country_code: TH
-//!   - name: New York, NY
-//!     country_code: US
-//!
-//! coordinates:
-//!   - lat: -0.829278
-//!     lon: -90.982067
-//!     # display name is optional
-//!     display_name: Somewhere in Equador
-//!
-//! # If you know the OWM city id ([see here](https://openweathermap.org/city)), it's generally better to tell the exporter to query it by id rather than by name+country code.
-//! locations:
-//!   - id: 4684888
-//!     display_name: Dallas, TX
-//!     
-//!```
-//!
-
 #![deny(clippy::all, clippy::missing_panics_doc)]
 #![warn(
     rustdoc::broken_intra_doc_links,
@@ -61,6 +7,53 @@
     //clippy::pedantic,
     //missing_docs
 )]
+// needed because dirs and tokio depend on wasi 0.11.0+wasi-snapshot-preview1
+// but metrics-exporter-prometheus depends on 0.10.2+wasi-snapshot-preview1
+#![allow(clippy::multiple_crate_versions)]
+
+//!
+//! A rust binary to that will poll weather readings for multiple locations and publish the metrics in prometheus exposition format.
+//!
+//! This uses [openweathermap_client](https://crates.io/crates/openweathermap_client) to query weather from the API.
+//!
+//! ## Install
+//!
+//! Currently, no binaries or container images are being built.  The only way to install it is via
+//!
+//! ```
+//! cargo install openweathermap_exporter
+//! ````
+//!
+//! ## Config File
+//!
+//! Create a config file.  Start with the the template below.
+//! This file should be named `owm_exporter.yaml` and placed in the working directory from where you plan to run the xporter or in the users home (`~/`) directory.
+//!
+//! ```yaml
+#![doc = include_str!("../../owm_exporter-template.yaml")]
+//! ```
+//!
+//! ## Running
+//!
+//! By default the exporter is pretty quiet.  It uses [env_logger](https://crates.io/crates/env_logger) to control the log level.
+//!
+//! When first using the exporter, consider running with `info` or `debug` level
+//!
+//! ```
+//! RUST_LOG=info cargo run
+//! ```
+//!
+//! Available log levels are `error`, `warn`, `info`, `debug`, `trace`.
+//!
+//! ## Verify Metrics Are Published
+//!
+//! All metrics returned by the free v2.5 API will be exported for scraping.  At the moment any route will suffice to load the metrics.  If you have not changed the default listen options you can test the your running instance with:
+//!
+//! ```
+//! curl http://localhost:9001/
+//! ```
+//!
+//! Metrics all include the unit of the measurement being exported in their name.  If you change the setting for `owm.units` in your config file, the names of the metrics might change accordingly.
 
 mod config;
 mod error;

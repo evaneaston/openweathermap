@@ -1,5 +1,7 @@
 [workspace]
-members = [
-    "client", "exporter"
-]
+members = ["client", "exporter"]
 
+[profile.release]
+codegen-units = 1
+lto = "fat"
+strip = true

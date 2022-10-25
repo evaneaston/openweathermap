@@ -1,7 +1,7 @@
 use http::StatusCode;
 use hyper::Uri;
 use hyper::{client::HttpConnector, Body};
-use hyper_tls::HttpsConnector;
+use hyper_rustls::HttpsConnector;
 use log::{debug, trace};
 use std::str::FromStr;
 use url::Url;
@@ -13,7 +13,7 @@ use crate::{models::CurrentWeather, Query};
 type HyperClient<C, B> = hyper::client::Client<C, B>;
 pub type HttpClient = HyperClient<HttpsConnector<HttpConnector>, Body>;
 
-/// Api docs are here https://openweathermap.org/current
+/// Api docs are here <https://openweathermap.org/current>
 const V25_ENDPOINT: &str = "https://api.openweathermap.org/data/2.5/weather";
 
 //
@@ -29,7 +29,14 @@ impl Client {
         options.validate()?;
         Ok(Client {
             options,
-            http_client: HyperClient::builder().build::<_, Body>(HttpsConnector::new()),
+            http_client: HyperClient::builder().build::<_, Body>(
+                hyper_rustls::HttpsConnectorBuilder::new()
+                    .with_native_roots()
+                    .https_only()
+                    .enable_http1()
+                    .enable_http2()
+                    .build(),
+            ),
         })
     }
 

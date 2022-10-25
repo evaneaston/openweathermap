@@ -10,12 +10,25 @@ license = "MIT-0"
 keywords = ["openweathermap", "prometheus", "metrics", "exporter"]
 categories = ["api-bindings"]
 
+[lib]
+name = "openweathermap_client"
+path = "src/lib.rs"
+
 [dependencies]
-hyper = { version = "0.14.20", features = ["client", "runtime", "http1","http2"] }
-hyper-tls = "0.5.0"
+hyper = { version = "0.14.20", features = [
+    "client",
+    "runtime",
+    "http1",
+    "http2",
+] }
+hyper-rustls = { version = "0.23.0", features = ["http2"] }
 http = "0.2"
 log = "0.4"
 serde = { version = "1.0.143", features = ["derive"] }
 serde_yaml = "0.9.9"
 thiserror = "1.0.37"
 url = "2.3.1"
+
+[dev-dependencies]
+# used for example docs
+tokio = { version = "1.20.1", features = ["macros", "net"] }
