@@ -30,7 +30,7 @@
 //! This file should be named `owm_exporter.yaml` and placed in the working directory from where you plan to run the xporter or in the users home (`~/`) directory.
 //!
 //! ```yaml
-#![doc = include_str!("../../owm_exporter-template.yaml")]
+#![doc = include_str!("../owm_exporter-template.yaml")]
 //! ```
 //!
 //! ## Running

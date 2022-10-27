@@ -22,7 +22,7 @@ Building of release binaries and container images is in the works as is addition
 
 ## Config File
 
-Create a config file. Start with the the template below.
+Create a config file. Start with the the template below (also available in source [here](./owm_exporter-template.yaml) )
 This file should be named `owm_exporter.yaml` and placed in the working directory from where you plan to run the xporter or in the users home (`~/`) directory.
 
 ```yaml
