@@ -25,6 +25,7 @@ cities:
 coordinates:
   - lat: -0.829278
     lon: -90.982067
+    display_name: The Galapagos
 
 locations:
-  - id: 4684888
+  - id: 3936456
