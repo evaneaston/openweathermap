@@ -6,12 +6,17 @@ edition = "2021"
 authors = ["evaneaston"]
 homepage = "https://github.com/evaneaston/openweathermap"
 repository = "https://github.com/evaneaston/openweathermap"
+readme = "../README.md"
 license = "MIT-0"
 keywords = ["openweathermap", "prometheus", "metrics", "exporter"]
 categories = ["command-line-utilities"]
 
+[[bin]]
+name = "openweathermap_exporter"
+path = "src/main.rs"
+
 [dependencies]
-openweathermap_client = { path = "../client" }
+openweathermap_client = { version = "0.1.1", path = "../client" }
 dirs = "4"
 env_logger = "0.9"
 log = "0.4"
@@ -24,7 +29,4 @@ serde = { version = "1.0.143", features = ["derive"] }
 serde_with = { version = "2.0.0", features = ["chrono", "macros"] }
 serde_yaml = "0.9.9"
 thiserror = "1.0.37"
-tokio = { version = "1.20.1", features = [
-    "macros", "net"
-] }
-
+tokio = { version = "1.20.1", features = ["macros", "net"] }

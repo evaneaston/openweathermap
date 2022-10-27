@@ -1,0 +1,26 @@
+listen:
+  address: 0.0.0.0  # all Ipv4 addresses is the default
+  port: 9001        
+
+owm:
+  api_key: XXX      # you've got to provide an api key
+  units: metric     # metric is the default
+  language: en      # en is the default
+
+# The exporter doesn't currently warn if the duration of all the calls exceeds the duration of `poll_interval_seconds`.  It's up to you to reconfigure so that all readings can be read withing the `poll_interval_seconds` timeframe.  This will probably be updated in a future release.
+poll_interval_seconds: 60
+max_calls_per_minute: 60
+
+cities:
+  - name: Bangkok
+    country_code: TH
+  - name: New York, NY
+    country_code: US
+
+coordinates:
+  - lat: -0.829278
+    lon: -90.982067
+    display_name: The Galapagos
+
+locations:
+  - id: 3936456

@@ -35,15 +35,6 @@ impl ClientOptions {
         }
     }
 
-    /// Create an instance with all defaults and the specified api_key.
-    pub fn new_default_with_api_key(api_key: &str) -> ClientOptions {
-        ClientOptions {
-            api_key: api_key.to_string(),
-            language: Self::default_language(),
-            units: Self::default_units(),
-        }
-    }
-
     // Defaults to the API_KEY environment variable or blank if the env var is not defined.
     pub fn default_api_key() -> String {
         match std::env::var("API_KEY") {
@@ -102,5 +93,90 @@ impl fmt::Debug for ClientOptions {
             self.language,
             self.units
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn client_options_default() {
+        std::env::set_var("API_KEY", "some value");
+
+        let def = ClientOptions::default();
+
+        assert_eq!(def.api_key, "some value");
+        assert_eq!(def.language, "en");
+        assert_eq!(def.units, UnitSystem::Metric);
+    }
+
+    #[test]
+    fn serde_parse() {
+        let parsed: ClientOptions = serde_yaml::from_str(
+            "\
+api_key: abc123
+language: \"de\"
+units: imperial
+",
+        )
+        .unwrap();
+
+        assert_eq!(parsed.api_key, "abc123");
+        assert_eq!(parsed.units, UnitSystem::Imperial);
+        assert_eq!(parsed.language, "de");
+    }
+
+    #[test]
+    fn mask_only_shows_the_first_3_characters_always_followed_by_only_4_stars() {
+        assert_eq!(mask("ABCDEFGHIJKLMNOPQRSTUVWZYZ"), "ABC****");
+        assert_eq!(mask("ABCDEFGH"), "ABC****");
+        assert_eq!(mask("ABCD"), "ABC****");
+        assert_eq!(mask("ABC"), "AB****");
+        assert_eq!(mask("AB"), "A****");
+        assert_eq!(mask("A"), "****");
+    }
+
+    #[test]
+    fn mask_returns_empty_string_for_empty_input() {
+        assert_eq!(mask(""), "");
+    }
+
+    #[test]
+    fn client_options_debug_masks_api_key() {
+        let options = ClientOptions {
+            api_key: "PLAINTEXT_API_KEY".to_string(),
+            ..ClientOptions::default()
+        };
+        assert_eq!(options.api_key, "PLAINTEXT_API_KEY");
+
+        let debug = format!("{:?}", options);
+        assert!(debug.find("PLAINTEXT") == None);
+        assert!(debug.find("PLA****").is_some());
+    }
+
+    #[test]
+    fn client_options_masked_api_key_masks() {
+        let options = ClientOptions {
+            api_key: "PLAINTEXT_API_KEY".to_string(),
+            ..ClientOptions::default()
+        };
+        assert_eq!(options.api_key, "PLAINTEXT_API_KEY");
+        assert_eq!(options.masked_api_key(), "PLA****");
+    }
+
+    #[test]
+    fn client_options_mask_api_key_if_present() {
+        let options = ClientOptions {
+            api_key: "the".to_string(),
+            ..ClientOptions::default()
+        };
+        assert_eq!(
+            options.mask_api_key_if_present(
+                "I think the quote is, \"It was the best of times, it was the worst of times, ...\""
+            ),
+            "I think th**** quote is, \"It was th**** best of times, it was th**** worst of times, ...\""
+        );
     }
 }
