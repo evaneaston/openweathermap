@@ -1,15 +1,16 @@
-# OpenWeatherMap Client API and Prometheus Exporter
+# OpenWeatherMap
+## Client Library + Prometheus Exporter
 
 This is a mono-repo for two rust crates:
 
-| Crate | Description |
-| ------|  ----- |
-| [openweathermap_client](#openweathermap_client) | A rust library for querying weather readings from OpenWeatherMap's free v2.5 API |  
-| [openweathermap_exporter](#openweathermap_client) | A prometheus exporter to query weather readings for many locations and publis their values in as metrics prometheus exposition format. | 
-
+| Crate                                             | Description                                                                                                                            |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [openweathermap_client](#openweathermap_client)   | A rust library for querying weather readings from OpenWeatherMap's free v2.5 API                                                       |
+| [openweathermap_exporter](#openweathermap_client) | A prometheus exporter to query weather readings for many locations and publis their values in as metrics prometheus exposition format. |
 
 [![CI](https://github.com/evaneaston/openweathermap/actions/workflows/ci.yml/badge.svg)](https://github.com/evaneaston/openweathermap/actions/workflows/ci.yml)
 
+---
 
 ## openweathermap_client
 
@@ -17,28 +18,33 @@ This is a mono-repo for two rust crates:
 
 `openweathermap_client` is a rust library that provides a client for querying OpenWeatherMap's free [version 2.5 weather API](https://openweathermap.org/current).
 
-## Features:
+### Features:
 
-* Binds query results into structs derived from [OpenWeatherMap's weather-data docs](https://openweathermap.org/weather-data) using [serde](https://crates.io/crates/serde).
-* Supports requesting results in OWM's `Standard`, `Metric`, or `Imperial` unit systems.
-* Supports requesting that the API translate of city names and weather descriptions into [supported languages](https://openweathermap.org/current#multi).
-* Cross platform.  Tested to confirm it runs on Windows, MacOS, and Linux and on many hardware architectures (will be)
-* Queries over **https** using [hyper](https://crates.io/crates/hyper) (some existing exporters don't).
-  * Doesn't require openssl to be installed, allowing it to be used on weird architectures, because it uses [hyper_rustls](https://crates.io/crates/hyper_rustls).
-* Is panic-free.
+- Binds query results into structs derived from [OpenWeatherMap's weather-data docs](https://openweathermap.org/weather-data) using [serde](https://crates.io/crates/serde).
+- Supports requesting results in OWM's `Standard`, `Metric`, or `Imperial` unit systems.
+- Supports requesting that the API translate of city names and weather descriptions into [supported languages](https://openweathermap.org/current#multi).
+- Cross platform. Tested to confirm it runs on Windows, MacOS, and Linux and on many hardware architectures (will be)
+- Queries over **https** using [hyper](https://crates.io/crates/hyper) (some existing exporters don't).
+  - Doesn't require openssl to be installed, allowing it to be used on weird architectures, because it uses [hyper_rustls](https://crates.io/crates/hyper_rustls).
+- Is panic-free.
 
+### Usage
+
+See the [library docs](https://docs.rs/openweathermap_client) for example usage. To obtain an OpenWeatherMap API Key, see [this section](#getting-an-openweathermap-api-key).
+
+---
 
 ## openweathermap_exporter
 
 [docs.rs](https://docs.rs/openweathermap_exporter) | [crates.io](https://crates.io/crates/openweathermap_exporter)
 
-The `openweathermap_exporter` is a prometheus exporter to query weather readings for many locations and publis their values in as metrics prometheus exposition format. 
+The `openweathermap_exporter` is a prometheus exporter to query weather readings for many locations and publis their values in as metrics prometheus exposition format.
 
 This uses [openweathermap_client](#openweathermap_client)☝ to query weather from the API.
 
 ### Installation
 
-Currently, no binaries or container images are being built. The only way to install it is via:
+Currently, no binaries or container images are being built. The only way to install it (assuming you have rust [already installed](https://www.rust-lang.org/tools/install)) is via:
 
 ```
 cargo install openweathermap_exporter
@@ -46,15 +52,19 @@ cargo install openweathermap_exporter
 
 Automatic, building of
 
-* release binaries (to be manually installed, cargo binstalled, or packaged)
-* cross-platform container images
+- release binaries (to be manually installed, cargo binstalled, or packaged)
+- cross-platform container images
 
 is in the works as are several [other features](https://github.com/evaneaston/openweathermap/issues).
 
-### Config File
+### Get An API Key
+
+To obtain an OpenWeatherMap API Key, see [this section](#getting-an-openweathermap-api-key).
+
+### Create A Config File
 
 Create a config file. Start with the the template below (also available in source [here](./exporter/owm_exporter-template.yaml) )
-This file should be named `owm_exporter.yaml` and placed in the working directory from where you plan to run the exporter or in the user's home (`~/`, `%USERPROFILE`) directory.
+This file should be named `owm_exporter.yaml` and placed in the working directory from where you plan to run the exporter or in the user's home (`~/` ,  `%USERPROFILE%`) directory.
 
 ```yaml
 #listen:
@@ -89,7 +99,7 @@ locations:
   - id: 3936456
 ```
 
-### Running
+### Run The Exporter
 
 By default the exporter is pretty quiet. It uses [env_logger](https://crates.io/crates/env_logger) to control the log level.
 
@@ -109,20 +119,21 @@ All metrics returned by the free v2.5 API will be exported for scraping. At the 
 curl http://localhost:9001/
 ```
 
+### Metric Names
+
 Because metric names [are encouraged](https://prometheus.io/docs/practices/naming/) to contain unit names:
 
 > A metric name...
-> * ...should have a suffix describing the unit
+>
+> - ...should have a suffix describing the unit
 
-### Metric Names
-
-`openweathermap_exporter` metrics all include the unit of the measurement being exported. If you change the setting for `owm.units` in your config file, the names of the metrics and their HELP text will change accordingly.
+`openweathermap_exporter` metrics all include the unit of the measurement in their name and HELP text. If you change the setting for `owm.units` in your config file, the names of the metrics and their HELP text will change accordingly.
 
 See [Example Of Metric Names](#example-of-metric-names) to see how they're named and what information is available in the labels.
 
 ### Example Dashboard
 
-I don't have a generalized dashboard template ready yet.  But will share one soon.  This is what my weather dashboard looks like:
+I don't have a generalized dashboard template ready yet. But will share one soon. This is what my weather dashboard looks like:
 
 ![weather-dashboard](./weather-dashboard.jpg)
 
@@ -130,7 +141,7 @@ I don't have a generalized dashboard template ready yet.  But will share one soo
 
 This is a scrape using the [example template config file](./exporter/owm_exporter-template.yaml).
 
-```
+```rust
 # HELP owm_cloudiness_percent % cloudiness
 # TYPE owm_cloudiness_percent gauge
 owm_cloudiness_percent{location="New York",q="New York, NY,US",reading_id="5128581",reading_lat="40.7143",reading_lon="-74.006",reading_name="New York"} 0
@@ -218,3 +229,7 @@ owm_api_call_time_milliseconds{quantile="1"} 65
 owm_api_call_time_milliseconds_sum 1941
 owm_api_call_time_milliseconds_count 20
 ```
+
+## Getting An OpenWeatherMap API Key
+
+To obtain an API key, go to [https://openweathermap.org/home/sign_in](https://openweathermap.org/home/sign_in) to sign in or create an account. Once logged in, select your user name from the top-right menu bar and then **My API Keys**. Use the **Create key** form to create a new key.

@@ -42,7 +42,7 @@ jobs:
           RUSTDOCFLAGS: -D warnings
 
   test:
-    name: test os=${{matrix.os}} target=${{matrix.target}}
+    name: Test os=${{matrix.os}} target=${{matrix.target}}
     needs: [ensure-api-key-set]
     strategy:
       fail-fast: false
@@ -83,11 +83,13 @@ jobs:
           toolchain: stable
           override: true
 
-      - uses: actions-rs/cargo@v1
+      - name: Native Test
+        uses: actions-rs/cargo@v1
         if: ${{matrix.target == ''}}
         with:
           command: test
-      - uses: actions-rs/cargo@v1
+      - name: Cross Test
+        uses: actions-rs/cargo@v1
         if: ${{matrix.target}}
         with:
           use-cross: true
