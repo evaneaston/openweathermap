@@ -25,11 +25,11 @@
 //! ````
 //!
 //! ## Get An API Key
-//! 
+//!
 //! To obtain an OpenWeatherMap API Key, see [this section](#getting-an-openweathermap-api-key).
 //!
 //! ## Create A Config File
-//! 
+//!
 //! Create a config file. Start with the the template below (also available in source [here](./exporter/owm_exporter-template.yaml) )
 //! This file should be named `owm_exporter.yaml` and placed in the working directory from where you plan to run the exporter or in the user's home (`~/` ,  `%USERPROFILE%`) directory.
 //!
@@ -46,27 +46,27 @@
 //! ```
 //! RUST_LOG=info cargo run
 //! ```
-//! 
+//!
 //! Available log levels are `error`, `warn`, `info`, `debug`, `trace`.
-//! 
+//!
 //! ## Verify Metrics Are Published
-//! 
+//!
 //! All metrics returned by the free v2.5 API will be exported for scraping. At the moment any route will suffice to load the metrics. If you have not changed the default listen options you can test the your running instance with:
-//! 
+//!
 //! ```bash
 //! curl http://localhost:9001/
 //! ```
-//! 
+//!
 //! ### Metric Names
-//! 
+//!
 //! Because metric names [are encouraged](https://prometheus.io/docs/practices/naming/) to contain unit names:
-//! 
+//!
 //! > A metric name...
 //! >
 //! > - ...should have a suffix describing the unit
-//! 
+//!
 //! `openweathermap_exporter` metrics all include the unit of the measurement in their name and HELP text. If you change the setting for `owm.units` in your config file, the names of the metrics and their HELP text will change accordingly.
-//! 
+//!
 //!
 #![doc = include_str!("../../get_api_key.md")]
 
