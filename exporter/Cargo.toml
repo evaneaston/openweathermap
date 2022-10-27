@@ -6,6 +6,7 @@ edition = "2021"
 authors = ["evaneaston"]
 homepage = "https://github.com/evaneaston/openweathermap"
 repository = "https://github.com/evaneaston/openweathermap"
+readme = "../README.md"
 license = "MIT-0"
 keywords = ["openweathermap", "prometheus", "metrics", "exporter"]
 categories = ["command-line-utilities"]
@@ -15,7 +16,7 @@ name = "openweathermap_exporter"
 path = "src/main.rs"
 
 [dependencies]
-openweathermap_client = { version = "0.1.0", path = "../client" }
+openweathermap_client = { version = "0.1.1", path = "../client" }
 dirs = "4"
 env_logger = "0.9"
 log = "0.4"
