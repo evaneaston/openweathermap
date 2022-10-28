@@ -1,9 +1,9 @@
 //!
+//! ## Get An API Key
 //!
-//!
-//! # First Obtain An API Key
-//!
-//! To get an API key, see <a href="#getting-an-openweathermap-api-key">Getting An OpenWeatherMap API Key</a>.
+//! To obtain an API key, go to [https://openweathermap.org/home/sign_in](https://openweathermap.org/home/sign_in) to
+//! sign in or create an account. Once logged in, select your user name from the top-right menu bar and then
+//! **My API Keys**. Use the **Create key** form to create a new key.
 //!
 //! ## Example #1
 //!
@@ -16,8 +16,7 @@
 //! ```rust
 #![doc = include_str!("../examples/get_multiple_readings.rs")]
 //! ```
-//!
-#![doc = include_str!("../../get_api_key.md")]
+
 #![deny(clippy::all, clippy::missing_panics_doc)]
 #![warn(
     rustdoc::broken_intra_doc_links,

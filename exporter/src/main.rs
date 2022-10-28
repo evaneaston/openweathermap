@@ -26,7 +26,9 @@
 //!
 //! ## Get An API Key
 //!
-//! To obtain an OpenWeatherMap API Key, see [this section](#getting-an-openweathermap-api-key).
+//! To obtain an API key, go to [https://openweathermap.org/home/sign_in](https://openweathermap.org/home/sign_in) to
+//! sign in or create an account. Once logged in, select your user name from the top-right menu bar and then
+//! **My API Keys**. Use the **Create key** form to create a new key.
 //!
 //! ## Create A Config File
 //!
@@ -67,8 +69,6 @@
 //!
 //! `openweathermap_exporter` metrics all include the unit of the measurement in their name and HELP text. If you change the setting for `owm.units` in your config file, the names of the metrics and their HELP text will change accordingly.
 //!
-//!
-#![doc = include_str!("../../get_api_key.md")]
 
 mod config;
 mod error;
