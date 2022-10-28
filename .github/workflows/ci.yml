@@ -23,6 +23,7 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - uses: Swatinem/rust-cache@v2
       - name: Check formatting
         uses: actions-rs/cargo@v1
         with:
@@ -82,6 +83,9 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: "${{matrix.os}}-${{matrix.target}}"
 
       - name: Native Test
         uses: actions-rs/cargo@v1
