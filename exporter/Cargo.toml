@@ -17,16 +17,16 @@ path = "src/main.rs"
 
 [dependencies]
 openweathermap_client = { version = "0.2.0", path = "../client" }
-dirs = "4"
-env_logger = "0.9"
+dirs = "5.0.0"
+env_logger = "0.9.1"
 log = "0.4"
-metrics = "0.20.1"
-metrics-exporter-prometheus = { version = "0.11.0", features = [
+metrics = "0.21.0"
+metrics-exporter-prometheus = { version = "0.12.0", features = [
     "http-listener",
 ] }
-metrics-util = "0.14.0"
-serde = { version = "1.0.143", features = ["derive"] }
-serde_with = { version = "2.0.0", features = ["chrono", "macros"] }
-serde_yaml = "0.9.9"
+metrics-util = "0.15.0"
+serde = { version = "1.0.145", features = ["derive"] }
+serde_with = { version = "2.0.1", features = ["chrono", "macros"] }
+serde_yaml = "0.9.21"
 thiserror = "1.0.37"
-tokio = { version = "1.20.1", features = ["macros", "net"] }
+tokio = { version = "1.21.1", features = ["macros", "net"] }
