@@ -63,7 +63,7 @@ pub const OWM_VISIBILITY: &MetricMetadata = &new_metric("owm_visibility_meters",
 pub const OWM_WIND_DIRECTION: &MetricMetadata =
     &new_metric("owm_wind_direction_degrees", "Wind direction in degrees (0-360)");
 
-pub fn owm_temperature<'a>(units: &'a UnitSystem) -> &'static MetricMetadata<'static> {
+pub fn owm_temperature(units: &UnitSystem) -> &'static MetricMetadata<'static> {
     match units {
         UnitSystem::Standard => OWM_TEMPERATURE_DEGREES_KELVIN,
         UnitSystem::Metric => OWM_TEMPERATURE_DEGREES_CELSIUS,

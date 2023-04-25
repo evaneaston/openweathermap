@@ -26,15 +26,6 @@ pub struct ClientOptions {
 }
 
 impl ClientOptions {
-    /// Useful for creating options with an API Key specified in the environment variable API_KEY and with defaults of "en", Metric, 1 call/sercond.
-    pub fn default() -> ClientOptions {
-        ClientOptions {
-            api_key: Self::default_api_key(),
-            language: Self::default_language(),
-            units: Self::default_units(),
-        }
-    }
-
     // Defaults to the API_KEY environment variable or blank if the env var is not defined.
     pub fn default_api_key() -> String {
         match std::env::var("API_KEY") {
@@ -72,6 +63,17 @@ impl ClientOptions {
     /// Take an arbitrary string that might have the self.api_key in it and returns a string with that all occurrences of the key masked.
     pub fn mask_api_key_if_present(&self, any_string: &str) -> String {
         any_string.replace(&self.api_key, &self.masked_api_key())
+    }
+}
+
+impl Default for ClientOptions {
+    /// Useful for creating options with an API Key specified in the environment variable API_KEY and with defaults of "en", Metric, 1 call/sercond.
+    fn default() -> Self {
+        Self {
+            api_key: Self::default_api_key(),
+            language: Self::default_language(),
+            units: Self::default_units(),
+        }
     }
 }
 
@@ -152,8 +154,8 @@ units: imperial
         assert_eq!(options.api_key, "PLAINTEXT_API_KEY");
 
         let debug = format!("{:?}", options);
-        assert!(debug.find("PLAINTEXT") == None);
-        assert!(debug.find("PLA****").is_some());
+        assert!(!debug.contains("PLAINTEXT"));
+        assert!(debug.contains("PLA****"));
     }
 
     #[test]
