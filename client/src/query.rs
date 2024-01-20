@@ -3,7 +3,7 @@ use core::fmt;
 use super::models::{City, CityId, Coord};
 
 /// Abstraction of a query against the OpenWeatherMap API.
-pub trait Query: fmt::Debug + fmt::Display {
+pub trait Query: fmt::Debug + fmt::Display + Send + Sync {
     /// Used in logging and included as a label in metrics published by openweathermap_exporter
     fn get_display_name(&self) -> &Option<String>;
     /// Query parameters and values that must be added to API call URL.
