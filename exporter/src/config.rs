@@ -131,9 +131,9 @@ impl ExporterConfig {
     }
 
     fn find_config_file() -> Result<PathBuf, ExporterError> {
-        let candidates = vec!["owm_exporter.yaml", "owm_exporter.yml", "owm_exporter.json"];
+        let candidates = ["owm_exporter.yaml", "owm_exporter.yml", "owm_exporter.json"];
 
-        let candidate_files: Vec<PathBuf> = vec![std::env::current_dir().ok(), dirs::home_dir()]
+        let candidate_files: Vec<PathBuf> = [std::env::current_dir().ok(), dirs::home_dir()]
             .iter()
             .flatten()
             .flat_map(|pb| candidates.iter().map(|file| pb.as_path().join(*file)))
