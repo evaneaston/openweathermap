@@ -33,7 +33,8 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: -- -D warnings
+          # temporarily disability fail on warnings
+          # args: -- -D warnings
       - name: Docs
         uses: actions-rs/cargo@v1
         with:

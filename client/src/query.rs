@@ -50,7 +50,8 @@ impl Query for CityId {
 mod tests {
     use crate::{
         models::{City, CityId, Coord},
-        Query, query::QueryParameter
+        query::QueryParameter,
+        Query,
     };
 
     fn coord_query() -> (Coord, Vec<QueryParameter>) {
@@ -119,19 +120,19 @@ mod tests {
 
     #[test]
     fn ensure_query_stays_send_plus_sync() {
-        let (query,_) = coord_query();
+        let (query, _) = coord_query();
         assert!(is_sync(&query));
         assert!(is_send(&query));
 
-        let (query,_) = city_query1();
+        let (query, _) = city_query1();
         assert!(is_sync(&query));
         assert!(is_send(&query));
 
-        let (query,_) = city_query2();
+        let (query, _) = city_query2();
         assert!(is_sync(&query));
         assert!(is_send(&query));
 
-        let (query,_) = city_id_query();
+        let (query, _) = city_id_query();
         assert!(is_sync(&query));
         assert!(is_send(&query));
     }

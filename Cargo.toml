@@ -1,8 +1,27 @@
 [workspace]
-members = ["client", "exporter"]
+members  = [ "client", "exporter" ]
 resolver = "2"
 
 [profile.release]
 codegen-units = 1
-lto = "fat"
-strip = true
+lto           = "fat"
+strip         = true
+
+[workspace.dependencies]
+dirs                        = "5.0.1"
+env_logger                  = "0.9.1"
+http                        = "1.0.0"
+http-body-util              = "0.1"
+hyper                       = "1.1.0"
+hyper-rustls                = "0.26.0"
+hyper-util                  = "0.1.2"
+log                         = "0.4.20"
+metrics                     = "0.21.1"
+metrics-exporter-prometheus = "0.12.2"
+metrics-util                = "0.15.1"
+serde                       = "1.0.195"
+serde_with                  = "2.3.3"
+serde_yaml                  = "0.9.30"
+thiserror                   = "1.0.56"
+tokio                       = "1.35.1"
+url                         = "2.5.0"

@@ -1,4 +1,3 @@
-use http::{uri::InvalidUri, StatusCode};
 use std::{
     fmt::{Display, Formatter, Result},
     str::Utf8Error,
@@ -13,21 +12,27 @@ pub enum ClientError {
 
     #[error("error calling API")]
     InvalidOptionsError(#[from] InvalidOptionsError),
+
+    #[error("error creating https client")]
+    HyperRustlsError(#[from] std::io::Error),
 }
 
 #[derive(Debug, Error)]
 pub enum ApiCallError {
     #[error("error building URI")]
-    ErrorFormingUri(#[from] InvalidUri),
+    ErrorFormingUri(#[from] hyper::http::uri::InvalidUri),
 
     #[error("error building URI")]
     ErrorFormingUrl(#[from] ParseError),
 
     #[error("unexpected response. Status: {status:?}, Body: {body:?}")]
-    InvalidResponsStatus { status: StatusCode, body: String },
+    InvalidResponsStatus { status: hyper::StatusCode, body: String },
 
     #[error("API call to {url:?} failed. Error: {error:?}")]
-    HttpError { error: hyper::Error, url: String },
+    HttpError {
+        error: hyper_util::client::legacy::Error,
+        url: String,
+    },
 
     #[error("Response body not utf-8 encoded.  Error: {0:?}")]
     ResponseEncodingError(#[from] Utf8Error),
@@ -35,6 +40,8 @@ pub enum ApiCallError {
     #[error("Error reading response. Error: {0:?}")]
     ResponseReadError(#[from] hyper::Error),
 
+    //  #[error("Error reading response. Error: {0:?}")]
+    //  ResponseReadError2(#[from]  (dyn hyper::body::Body as Body)::Error),
     #[error("Error parsing response body.  Error: {0:?}")]
     ResponseParseError(#[from] serde_yaml::Error),
 }
