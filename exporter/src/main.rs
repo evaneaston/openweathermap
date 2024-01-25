@@ -4,12 +4,8 @@
     clippy::cargo,
     clippy::perf,
     clippy::complexity,
-    //clippy::pedantic,
-    //missing_docs
+    clippy::multiple_crate_versions
 )]
-// needed because dirs and tokio depend on wasi 0.11.0+wasi-snapshot-preview1
-// but metrics-exporter-prometheus depends on 0.10.2+wasi-snapshot-preview1
-#![allow(clippy::multiple_crate_versions)]
 
 //!
 //! A rust binary to that will poll weather readings for multiple locations and publish the metrics in prometheus exposition format.

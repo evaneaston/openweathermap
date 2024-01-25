@@ -1,32 +1,30 @@
 [package]
-name = "openweathermap_exporter"
+name        = "openweathermap_exporter"
 description = "An aggregator that polls OpenWeatherMap free API data and exposes it in prometheus exposition format."
-version = "0.2.0"
-edition = "2021"
-authors = ["evaneaston"]
-homepage = "https://github.com/evaneaston/openweathermap"
-repository = "https://github.com/evaneaston/openweathermap"
-readme = "../README.md"
-license = "MIT-0"
-keywords = ["openweathermap", "prometheus", "metrics", "exporter"]
-categories = ["command-line-utilities"]
+version     = "0.2.0"
+edition     = "2021"
+authors     = [ "evaneaston" ]
+homepage    = "https://github.com/evaneaston/openweathermap"
+repository  = "https://github.com/evaneaston/openweathermap"
+readme      = "../README.md"
+license     = "MIT-0"
+keywords    = [ "openweathermap", "prometheus", "metrics", "exporter" ]
+categories  = [ "command-line-utilities" ]
 
 [[bin]]
 name = "openweathermap_exporter"
 path = "src/main.rs"
 
 [dependencies]
-openweathermap_client = { version = "0.2.0", path = "../client" }
-dirs = "5.0.0"
-env_logger = "0.9.1"
-log = "0.4"
-metrics = "0.21.0"
-metrics-exporter-prometheus = { version = "0.12.0", features = [
-    "http-listener",
-] }
-metrics-util = "0.15.0"
-serde = { version = "1.0.145", features = ["derive"] }
-serde_with = { version = "2.0.1", features = ["chrono", "macros"] }
-serde_yaml = "0.9.21"
-thiserror = "1.0.37"
-tokio = { version = "1.21.1", features = ["macros", "net"] }
+dirs                        = { workspace = true }
+env_logger                  = { workspace = true }
+log                         = { workspace = true }
+metrics                     = { workspace = true }
+metrics-exporter-prometheus = { workspace = true, features = [ "http-listener" ] }
+metrics-util                = { workspace = true }
+openweathermap_client       = { version = "0.2.0", path = "../client" }
+serde                       = { workspace = true, features = [ "derive" ] }
+serde_with                  = { workspace = true, features = [ "chrono", "macros" ] }
+serde_yaml                  = { workspace = true }
+thiserror                   = { workspace = true }
+tokio                       = { workspace = true, features = [ "macros", "net" ] }

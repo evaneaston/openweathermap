@@ -24,6 +24,7 @@
     clippy::perf,
     clippy::complexity,
     //missing_docs,
+    clippy::multiple_crate_versions,
 )]
 
 mod client;

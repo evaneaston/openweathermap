@@ -1,17 +1,25 @@
-use http::StatusCode;
-use hyper::Uri;
-use hyper::{client::HttpConnector, Body};
+use http_body_util::{BodyExt, Empty};
+use hyper::{
+    body::{Bytes, Incoming},
+    Response, StatusCode, Uri,
+};
 use hyper_rustls::HttpsConnector;
+use hyper_util::{
+    client::legacy::{connect::HttpConnector, Client as HyperClient},
+    rt::TokioExecutor,
+};
 use log::{debug, trace};
 use std::str::FromStr;
 use url::Url;
 
-use crate::error::{ApiCallError, InvalidOptionsError};
-use crate::options::ClientOptions;
-use crate::{models::CurrentWeather, Query};
+use crate::{
+    error::{ApiCallError, ClientError},
+    models::CurrentWeather,
+    options::ClientOptions,
+    Query,
+};
 
-type HyperClient<C, B> = hyper::client::Client<C, B>;
-pub type HttpClient = HyperClient<HttpsConnector<HttpConnector>, Body>;
+pub type HttpClient = HyperClient<HttpsConnector<HttpConnector>, Empty<Bytes>>;
 
 /// Api docs are here <https://openweathermap.org/current>
 const V25_ENDPOINT: &str = "https://api.openweathermap.org/data/2.5/weather";
@@ -25,18 +33,20 @@ pub struct Client {
 impl Client {
     /// Create a new client using the supplied options.
     /// Returns an error if it fails because of invalid options.
-    pub fn new(options: ClientOptions) -> Result<Client, InvalidOptionsError> {
+    pub fn new(options: ClientOptions) -> Result<Client, ClientError> {
         options.validate()?;
+
+        let https = hyper_rustls::HttpsConnectorBuilder::new()
+            .with_native_roots()?
+            .https_only()
+            .enable_http1()
+            .build();
+
+        let c = HyperClient::builder(TokioExecutor::new()).build(https);
+
         Ok(Client {
             options,
-            http_client: HyperClient::builder().build::<_, Body>(
-                hyper_rustls::HttpsConnectorBuilder::new()
-                    .with_native_roots()
-                    .https_only()
-                    .enable_http1()
-                    .enable_http2()
-                    .build(),
-            ),
+            http_client: c,
         })
     }
 
@@ -88,10 +98,7 @@ impl Client {
         }
     }
 
-    async fn handle_200_response(
-        &self,
-        response_body: http::Response<hyper::Body>,
-    ) -> Result<CurrentWeather, ApiCallError> {
+    async fn handle_200_response(&self, response_body: Response<Incoming>) -> Result<CurrentWeather, ApiCallError> {
         let body = response_body_as_str(response_body).await?;
 
         trace!("Response: {}", body);
@@ -101,11 +108,7 @@ impl Client {
         }
     }
 
-    async fn handle_non_200_response(
-        &self,
-        response_body: http::Response<hyper::Body>,
-        sc: &StatusCode,
-    ) -> ApiCallError {
+    async fn handle_non_200_response(&self, response_body: Response<Incoming>, sc: &StatusCode) -> ApiCallError {
         let rb = match response_body_as_str(response_body).await {
             Ok(rb) => rb,
             Err(error) => format!("Error obtaining response body {:?}", error),
@@ -114,9 +117,9 @@ impl Client {
     }
 }
 
-async fn response_body_as_str(response_body: http::Response<hyper::Body>) -> Result<String, ApiCallError> {
-    let buf = match hyper::body::to_bytes(response_body).await {
-        Ok(ok) => Ok(ok),
+async fn response_body_as_str(response_body: hyper::Response<Incoming>) -> Result<String, ApiCallError> {
+    let buf = match response_body.collect().await {
+        Ok(ok) => Ok(ok.to_bytes()),
         Err(e) => Err(ApiCallError::ResponseReadError(e)),
     }?;
     match std::str::from_utf8(&buf) {
