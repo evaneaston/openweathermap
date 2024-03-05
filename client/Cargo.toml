@@ -28,5 +28,4 @@ thiserror      = { workspace = true }
 url            = { workspace = true }
 
 [dev-dependencies]
-# used for example docs
-tokio = { workspace = true, features = [ "macros", "net" ] }
+tokio          = { workspace = true, features = [ "macros" ] }
