@@ -1,7 +1,7 @@
 [package]
 name        = "openweathermap_client"
 description = "A client for querying the weather from the free OpenWeatherMap API."
-version     = "0.2.0"
+version     = "0.3.0"
 edition     = "2021"
 authors     = [ "evaneaston" ]
 homepage    = "https://github.com/evaneaston/openweathermap"
@@ -28,4 +28,4 @@ thiserror      = { workspace = true }
 url            = { workspace = true }
 
 [dev-dependencies]
-tokio          = { workspace = true, features = [ "macros" ] }
+tokio = { workspace = true, features = [ "macros" ] }

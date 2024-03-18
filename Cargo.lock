@@ -781,7 +781,7 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
 name = "openweathermap_client"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "http 1.0.0",
  "http-body-util",
@@ -798,10 +798,13 @@ dependencies = [
 
 [[package]]
 name = "openweathermap_exporter"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "dirs",
  "env_logger",
+ "http-body-util",
+ "hyper 1.1.0",
+ "hyper-util",
  "log",
  "metrics",
  "metrics-exporter-prometheus",

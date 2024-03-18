@@ -2,6 +2,7 @@ use log::error;
 use serde::Deserialize;
 use serde_with::{serde_as, DurationSeconds};
 use std::{
+    env::VarError,
     net::{IpAddr, Ipv4Addr},
     path::{Path, PathBuf},
     time::Duration,
@@ -32,13 +33,47 @@ impl Default for ListenOptions {
 }
 
 impl ListenOptions {
-    // By default, listen on all ipv4 interfaces
+    // By default, listen on all 127.0.0.1 interfaces
     fn default_listen_address() -> IpAddr {
-        IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0))
+        let env_var = "LISTEN_ADDRESS";
+        let default_address = || IpAddr::V4(Ipv4Addr::LOCALHOST);
+
+        // TODO factor out env match
+        // TODO fix panic
+        match std::env::var(env_var) {
+            Ok(address_string) => {
+                if address_string.trim().is_empty() {
+                    default_address()
+                } else {
+                    address_string.parse::<IpAddr>().unwrap_or_else(|e| {
+                        panic!("Unable to parse environment variable {env_var} {address_string} as a ipv4 address. {e}")
+                    })
+                }
+            }
+            Err(VarError::NotPresent) => default_address(),
+            Err(VarError::NotUnicode(e)) => panic!("Unable to load environment variable {env_var}. {:?}", e),
+        }
     }
 
     fn default_listen_port() -> u16 {
-        9001
+        let env_var = "LISTEN_PORT";
+        let default_port = 9001;
+
+        //  factor out env match
+        // TODO fix panic
+        match std::env::var(env_var) {
+            Ok(port_string) => {
+                if port_string.trim().is_empty() {
+                    default_port
+                } else {
+                    port_string.parse::<u16>().unwrap_or_else(|e| {
+                        panic!("Unable to parse environment variable {env_var} {port_string} as a 16-bit integer. {e}")
+                    })
+                }
+            }
+            Err(VarError::NotPresent) => default_port,
+            Err(VarError::NotUnicode(e)) => panic!("Unable to load environment variable {env_var}. {:?}", e),
+        }
     }
 }
 
