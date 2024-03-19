@@ -33,12 +33,11 @@ impl Default for ListenOptions {
 }
 
 impl ListenOptions {
-    // By default, listen on all 127.0.0.1 interfaces
+    // IP address in environment variable LISTEN_ADDRESS if present or localhost
     fn default_listen_address() -> IpAddr {
         let env_var = "LISTEN_ADDRESS";
         let default_address = || IpAddr::V4(Ipv4Addr::LOCALHOST);
 
-        // TODO factor out env match
         // TODO fix panic
         match std::env::var(env_var) {
             Ok(address_string) => {
@@ -55,11 +54,11 @@ impl ListenOptions {
         }
     }
 
+    // port  in environment variable LISTEN_PORT if present or 9001
     fn default_listen_port() -> u16 {
         let env_var = "LISTEN_PORT";
         let default_port = 9001;
 
-        //  factor out env match
         // TODO fix panic
         match std::env::var(env_var) {
             Ok(port_string) => {

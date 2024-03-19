@@ -10,6 +10,7 @@ use std::{
     time::Duration,
 };
 use tokio::time::sleep;
+use wait_timeout::ChildExt;
 
 #[tokio::test]
 async fn exporter_integration_test() -> Result<(), Box<dyn Error>> {
@@ -26,16 +27,33 @@ async fn exporter_integration_test() -> Result<(), Box<dyn Error>> {
         .spawn()
         .expect("unable to start exporter");
 
-    sleep(Duration::from_millis(1000)).await;
+    match child_process.wait_timeout(Duration::from_millis(1000)) {
+        Ok(Some(status)) => panic!("Exporter process exited prematurely with {}", status),
+        Ok(None) => (), // this is good, it's still running
+        Err(e) => panic!("Error waiting to see if child process is running or has ended: {}", e),
+    };
 
     let uri = format!("http://127.0.0.1:{port}")
         .parse::<Uri>()
         .unwrap_or_else(|e| panic!("Error parsing URI: {:?}", e));
 
-    let (status, body) = read_from(uri).await;
+    let attempts = 3;
+    for remaining in (0..attempts).rev() {
+        let (status, body) = read_from(uri.clone()).await;
 
-    assert_eq!(status, StatusCode::OK);
-    assert!(body.contains("owm_query_success{q=\"Paris, FR,FR\"} 1"));
+        assert_eq!(status, StatusCode::OK);
+        if body.contains("owm_query_success{q=\"Paris, FR,FR\"} 1") {
+            println!(
+                "Found expected response on attempt #{} (1-based)",
+                (attempts - remaining)
+            );
+            break;
+        }
+        if remaining == 0 {
+            panic!("Failed to find paris query status after {attempts} attempts.")
+        }
+        sleep(Duration::from_millis(1000)).await;
+    }
 
     child_process.kill()?;
 

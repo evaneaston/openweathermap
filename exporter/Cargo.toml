@@ -33,3 +33,5 @@ tokio                       = { workspace = true, features = [ "macros", "net" ]
 http-body-util = { workspace = true }
 hyper          = { workspace = true, features = [ "client" ] }
 hyper-util     = { workspace = true, features = [ "client", "http1", "client-legacy" ] }
+wait-timeout   = { workspace = true }
+
