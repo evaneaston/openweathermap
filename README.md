@@ -68,13 +68,13 @@ This file should be named `owm_exporter.yaml` and placed in the working director
 
 ```yaml
 #listen:
-#  address: 0.0.0.0
-#  port: 9001
+#  address: localhost  # Defaults to localhost.  Can be omitted and specified in the environment variable LISTEN_ADDRESS.
+#  port: 9001          # Defaults to 9001.  Can be omitted and specified in the environment variable LISTEN_PORT.
 
 owm:
-  api_key: # you've got to provide an api key
-#  units: metric     # metric is the default
-#  language: en      # en is the default
+  api_key:             # You must provide a an api key.  Can be omitted from this file and specified in the environment variable API_KEY.
+#  units: metric       # metric is the default
+#  language: en        # en is the default
 
 # The exporter doesn't currently warn if the duration of all the calls exceeds the duration
 # of `poll_interval_seconds`.  It's up to you to reconfigure so that all readings can be read

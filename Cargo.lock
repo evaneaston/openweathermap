@@ -781,7 +781,7 @@ checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
 
 [[package]]
 name = "openweathermap_client"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "http 1.0.0",
  "http-body-util",
@@ -798,10 +798,13 @@ dependencies = [
 
 [[package]]
 name = "openweathermap_exporter"
-version = "0.2.0"
+version = "0.3.0"
 dependencies = [
  "dirs",
  "env_logger",
+ "http-body-util",
+ "hyper 1.1.0",
+ "hyper-util",
  "log",
  "metrics",
  "metrics-exporter-prometheus",
@@ -812,6 +815,7 @@ dependencies = [
  "serde_yaml",
  "thiserror",
  "tokio",
+ "wait-timeout",
 ]
 
 [[package]]
@@ -1435,6 +1439,15 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
+
+[[package]]
+name = "wait-timeout"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9f200f5b12eb75f8c1ed65abd4b2db8a6e1b138a20de009dacee265a2498f3f6"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "want"
