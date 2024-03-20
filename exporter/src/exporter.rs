@@ -127,7 +127,7 @@ impl Exporter {
 
     fn update_query_success_metrics(&self, query: &dyn Query, success: bool) {
         let labels = labels_for_query(query);
-        gauge!(OWM_QUERY_SUCCESS.name(), if success { 1. } else { 0. }, &labels);
+        gauge!(OWM_QUERY_SUCCESS.name(), &labels).set(if success { 1. } else { 0. });
     }
 
     fn describe_call_metrics(&self) {
@@ -163,39 +163,35 @@ impl Exporter {
     fn write_reading_values(&self, reading: &CurrentWeather, labels: &Vec<(&'static str, String)>) {
         let units = &self.config.owm.units;
 
-        gauge!(OWM_TIMESTAMP_SECONDS.name(), reading.dt as f64, labels);
+        gauge!(OWM_TIMESTAMP_SECONDS.name(), labels).set(reading.dt as f64);
 
-        gauge!(owm_temperature(units).name(), reading.main.temp, labels);
-        gauge!(
-            owm_temperature_feels_like(units).name(),
-            reading.main.feels_like,
-            labels
-        );
-        gauge!(OWM_PRESSURE.name(), reading.main.pressure, labels);
-        gauge!(OWM_HUMIDITY_PERCENT.name(), reading.main.humidity, labels);
-        gauge!(owm_wind_speed(units).name(), reading.wind.speed, labels);
-        gauge!(OWM_WIND_DIRECTION.name(), reading.wind.deg, labels);
+        gauge!(owm_temperature(units).name(), labels).set(reading.main.temp);
+        gauge!(owm_temperature_feels_like(units).name(), labels).set(reading.main.feels_like);
+        gauge!(OWM_PRESSURE.name(), labels).set(reading.main.pressure);
+        gauge!(OWM_HUMIDITY_PERCENT.name(), labels).set(reading.main.humidity);
+        gauge!(owm_wind_speed(units).name(), labels).set(reading.wind.speed);
+        gauge!(OWM_WIND_DIRECTION.name(), labels).set(reading.wind.deg);
         if let Some(gust) = reading.wind.gust {
-            gauge!(owm_wind_gust(units).name(), gust, labels);
+            gauge!(owm_wind_gust(units).name(), labels).set(gust);
         }
-        gauge!(OWM_CLOUDINESS_PERCENT.name(), reading.clouds.cloudiness, labels);
-        gauge!(OWM_VISIBILITY.name(), reading.visibility as f64, labels);
+        gauge!(OWM_CLOUDINESS_PERCENT.name(), labels).set(reading.clouds.cloudiness);
+        gauge!(OWM_VISIBILITY.name(), labels).set(reading.visibility as f64);
 
         if let Some(pv) = &reading.rain {
             if let Some(mm) = pv.one_hour {
-                gauge!(OWM_RAIN_1H.name(), mm, labels);
+                gauge!(OWM_RAIN_1H.name(), labels).set(mm);
             }
             if let Some(mm) = pv.three_hour {
-                gauge!(OWM_RAIN_3H.name(), mm, labels);
+                gauge!(OWM_RAIN_3H.name(), labels).set(mm);
             }
         }
 
         if let Some(pv) = &reading.snow {
             if let Some(mm) = pv.one_hour {
-                gauge!(OWM_SNOW_1H.name(), mm, labels);
+                gauge!(OWM_SNOW_1H.name(), labels).set(mm);
             }
             if let Some(mm) = pv.three_hour {
-                gauge!(OWM_SNOW_3H.name(), mm, labels);
+                gauge!(OWM_SNOW_3H.name(), labels).set(mm);
             }
         }
     }
@@ -203,7 +199,7 @@ impl Exporter {
 
 fn update_call_time_metrics(call_duration: &Result<Duration, SystemTimeError>) {
     if let Ok(duration) = call_duration {
-        histogram!(OWM_API_CALL_TIME_HIST.name(), duration.as_millis() as f64);
+        histogram!(OWM_API_CALL_TIME_HIST.name()).record(duration.as_millis() as f64);
     }
 }
 

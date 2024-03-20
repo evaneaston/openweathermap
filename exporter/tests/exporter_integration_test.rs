@@ -47,6 +47,22 @@ async fn exporter_integration_test() -> Result<(), Box<dyn Error>> {
                 "Found expected response on attempt #{} (1-based)",
                 (attempts - remaining)
             );
+
+            assert!(body.contains(
+                "# HELP owm_api_call_time_milliseconds Histogram of successful call times per location in milliseconds"
+            ));
+            assert!(body.contains("# TYPE owm_api_call_time_milliseconds summary"));
+
+            assert!(body.contains(r#"owm_api_call_time_milliseconds{quantile="0"} "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds{quantile="0.5"} "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds{quantile="0.9"} "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds{quantile="0.95"} "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds{quantile="0.99"} "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds{quantile="0.999"} "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds{quantile="1"} "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds_sum "#));
+            assert!(body.contains(r#"owm_api_call_time_milliseconds_count "#));
+
             break;
         }
         if remaining == 0 {
