@@ -1,15 +1,16 @@
 [package]
-name        = "openweathermap_exporter"
-description = "An aggregator that polls OpenWeatherMap free API data and exposes it in prometheus exposition format."
-version     = "0.3.0"
-edition     = "2021"
-authors     = [ "evaneaston" ]
-homepage    = "https://github.com/evaneaston/openweathermap"
-repository  = "https://github.com/evaneaston/openweathermap"
-readme      = "../README.md"
-license     = "MIT-0"
-keywords    = [ "openweathermap", "prometheus", "metrics", "exporter" ]
-categories  = [ "command-line-utilities" ]
+name         = "openweathermap_exporter"
+description  = "An aggregator that polls OpenWeatherMap free API data and exposes it in prometheus exposition format."
+version      = "0.3.0"
+rust-version = "1.71"
+edition      = "2021"
+authors      = [ "evaneaston" ]
+homepage     = "https://github.com/evaneaston/openweathermap"
+repository   = "https://github.com/evaneaston/openweathermap"
+readme       = "README.md"
+license      = "MIT-0"
+keywords     = [ "openweathermap", "prometheus", "metrics", "exporter" ]
+categories   = [ "command-line-utilities" ]
 
 [[bin]]
 name = "openweathermap_exporter"
@@ -34,4 +35,3 @@ http-body-util = { workspace = true }
 hyper          = { workspace = true, features = [ "client" ] }
 hyper-util     = { workspace = true, features = [ "client", "http1", "client-legacy" ] }
 wait-timeout   = { workspace = true }
-
