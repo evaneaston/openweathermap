@@ -39,7 +39,7 @@ jobs:
           - os: ubuntu-latest
             rust: beta
           - os: ubuntu-latest
-            rust: 1.70.0
+            rust: 1.71.0
 
     steps:
       - uses: actions/checkout@v4
@@ -83,4 +83,3 @@ jobs:
       - uses: dtolnay/rust-toolchain@nightly
       - uses: dtolnay/install@cargo-docs-rs
       - run: cargo docs-rs -p openweathermap_client 
-      - run: cargo docs-rs -p openweathermap_exporter
