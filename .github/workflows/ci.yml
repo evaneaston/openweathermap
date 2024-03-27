@@ -24,28 +24,22 @@ jobs:
             core.setFailed('API_KEY secret must be defined!')
 
   test:
-    name: Rust ${{matrix.rust}}
+    name: Rust ${{matrix.rust}} ${{matrix.os}}
     needs: ensure_api_key_set
     if: needs.pre_ci.outputs.continue
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        rust: [nightly, beta, stable, 1.65.0]
+        rust: [stable]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        exclude:
-          - os: windows-latest
+        include:
+          - os: ubuntu-latest
             rust: nightly
-          - os: macos-latest
-            rust: nightly
-          - os: windows-latest
+          - os: ubuntu-latest
             rust: beta
-          - os: macos-latest
-            rust: beta
-          - os: windows-latest
-            rust: 1.65.0
-          - os: macos-latest
-            rust: 1.65.0
+          - os: ubuntu-latest
+            rust: 1.70.0
 
     steps:
       - uses: actions/checkout@v4
@@ -64,18 +58,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - run: cargo format -- --check
+      - run: cargo fmt -- --check
 
-  outdated:
-    name: Outdated
-    needs: pre_ci
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: dtolnay/install@cargo-outdated
-      - run: cargo outdated --workspace --exit-code 1
+  # outdated:
+  #   name: Outdated
+  #   needs: pre_ci
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name != 'pull_request'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: dtolnay/rust-toolchain@stable
+  #     - uses: dtolnay/install@cargo-outdated
+  #     - run: cargo outdated --workspace --exit-code 1
 
   doc:
     name: Documentation
@@ -88,4 +82,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
       - uses: dtolnay/install@cargo-docs-rs
-      - run: cargo docs-rs
+      - run: cargo docs-rs -p openweathermap_client 
+      - run: cargo docs-rs -p openweathermap_exporter
