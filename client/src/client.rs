@@ -32,7 +32,9 @@ pub struct Client {
 
 impl Client {
     /// Create a new client using the supplied options.
-    /// Returns an error if it fails because of invalid options.
+    ///
+    /// # Errors
+    /// Returns an error if invalid [`ClientOptions`] are provided.
     pub fn new(options: ClientOptions) -> Result<Client, ClientError> {
         options.validate()?;
 
@@ -50,18 +52,21 @@ impl Client {
         })
     }
 
-    /// Fetch the weather for the provided [Query].
+    /// Fetch the weather for the provided [`Query`].
+    ///
+    /// # Errors
+    /// May fail for a variety of reasons, See [`ApiCallError`].
     pub async fn fetch_weather(&self, query: &dyn Query) -> Result<CurrentWeather, ApiCallError> {
-        let url = self.url_for(query)?;
+        let query_url = self.url_for(query)?;
 
-        let uri = match Uri::from_str(url.as_str()) {
+        let uri = match Uri::from_str(query_url.as_str()) {
             Ok(u) => Ok(u),
             Err(invalid_uri) => Err(ApiCallError::ErrorFormingUri(invalid_uri)),
         }?;
 
         debug!(
             "Fetch weather at URL {}",
-            self.options.mask_api_key_if_present(url.as_str())
+            self.options.mask_api_key_if_present(query_url.as_str())
         );
 
         match self.http_client.get(uri).await {
@@ -74,7 +79,7 @@ impl Client {
             }
             Err(error) => Err(ApiCallError::HttpError {
                 error,
-                url: self.options.mask_api_key_if_present(url.as_str()),
+                url: self.options.mask_api_key_if_present(query_url.as_str()),
             }),
         }
     }
@@ -111,7 +116,7 @@ impl Client {
     async fn handle_non_200_response(&self, response_body: Response<Incoming>, sc: &StatusCode) -> ApiCallError {
         let rb = match response_body_as_str(response_body).await {
             Ok(rb) => rb,
-            Err(error) => format!("Error obtaining response body {:?}", error),
+            Err(error) => format!("Error obtaining response body {error:?}"),
         };
         ApiCallError::InvalidResponsStatus { status: *sc, body: rb }
     }

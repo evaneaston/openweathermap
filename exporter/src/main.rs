@@ -1,11 +1,6 @@
-#![deny(clippy::all, clippy::missing_panics_doc)]
-#![warn(
-    rustdoc::broken_intra_doc_links,
-    clippy::cargo,
-    clippy::perf,
-    clippy::complexity,
-    clippy::multiple_crate_versions
-)]
+#![deny(clippy::pedantic, clippy::missing_panics_doc)]
+#![warn(clippy::multiple_crate_versions)]
+#![allow(clippy::module_name_repetitions, clippy::must_use_candidate)]
 
 //!
 //! A rust binary to that will poll weather readings for multiple locations and publish the metrics in prometheus exposition format.

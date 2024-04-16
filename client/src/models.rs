@@ -48,7 +48,7 @@ pub struct City {
     pub display_name: Option<String>,
 }
 impl City {
-    /// Create an instance with just name and country_code
+    /// Create an instance with just `name` and `country_code`
     pub fn new(name: &str, country_code: &str) -> City {
         City {
             name: name.to_string(),
@@ -61,7 +61,7 @@ impl City {
 impl Display for City {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match &self.display_name {
-            Some(display_name) => write!(f, "{}", display_name),
+            Some(display_name) => write!(f, "{display_name}"),
             None => write!(f, "{}, {}", self.name, self.country_code),
         }
     }
@@ -84,7 +84,7 @@ impl CityId {
 impl Display for CityId {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match &self.display_name {
-            Some(display_name) => write!(f, "{}", display_name),
+            Some(display_name) => write!(f, "{display_name}"),
             None => write!(f, "{}", self.id),
         }
     }
@@ -113,13 +113,15 @@ impl Coord {
 impl Display for Coord {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match &self.display_name {
-            Some(display_name) => write!(f, "{}", display_name),
+            Some(display_name) => write!(f, "{display_name}"),
             None => write!(f, "lat={}, lon={}", self.lat, self.lon),
         }
     }
 }
 
-/// Main structure for responses from the free OpenWeatherMap API.
+/// Main structure for responses from the free `OpenWeatherMap` API
+///
+/// See their API response documenation [here](https://openweathermap.org/current#fields_json).
 #[derive(Debug, Deserialize)]
 pub struct CurrentWeather {
     /// City geo location, longitude
@@ -142,7 +144,7 @@ pub struct CurrentWeather {
     pub rain: Option<PrecipVolume>,
     /// Recent snow volume
     pub snow: Option<PrecipVolume>,
-    /// Time of data calculation, unix, UTC
+    /// Time of data calculation, unix, UTC (in seconds)
     pub dt: i64,
     /// See [Sys]
     pub sys: Sys,

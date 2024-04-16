@@ -1,3 +1,7 @@
+#![deny(clippy::pedantic, clippy::cargo)]
+#![warn(clippy::perf, clippy::complexity, clippy::multiple_crate_versions)]
+#![allow(clippy::module_name_repetitions, clippy::must_use_candidate)]
+
 //!
 //! ## Get An API Key
 //!
@@ -16,16 +20,6 @@
 //! ```rust
 #![doc = include_str!("../examples/get_multiple_readings.rs")]
 //! ```
-
-#![deny(clippy::all, clippy::missing_panics_doc)]
-#![warn(
-    rustdoc::broken_intra_doc_links,
-    clippy::cargo,
-    clippy::perf,
-    clippy::complexity,
-    //missing_docs,
-    clippy::multiple_crate_versions,
-)]
 
 mod client;
 pub mod error;
