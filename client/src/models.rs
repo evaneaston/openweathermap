@@ -44,7 +44,7 @@ pub struct City {
     /// An [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) 2-character country code
     pub country_code: String,
 
-    /// When available will be rendered by [Display] instead of the name, country_code.
+    /// When available will be rendered by [Display] instead of the `name`, `country_code`.
     pub display_name: Option<String>,
 }
 impl City {
@@ -128,7 +128,7 @@ pub struct CurrentWeather {
     pub coord: Coord,
     /// Seems to generally be a collection of one
     pub weather: Vec<Weather>,
-    /// OpenWeatherMap documents as "Internal parameter"
+    /// `OpenWeatherMap` documents as "Internal parameter"
     pub base: String,
 
     /// Main readings that are usually present in responses.  See [Main].
@@ -182,7 +182,7 @@ pub struct Main {
     pub temp_min: f64,
     /// Maximum temperature at the moment. This is maximal currently observed temperature (within large megalopolises and urban areas). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
     pub temp_max: f64,
-    /// Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa
+    /// Atmospheric pressure (on the sea level, if there is no `sea_level` or `grnd_level` data), hPa
     pub pressure: f64,
     /// Atmospheric pressure on the sea level, hPa
     pub sea_level: Option<f64>,
