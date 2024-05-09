@@ -5,9 +5,9 @@ use super::models::{City, CityId, Coord};
 pub type QueryParameter = (&'static str, String);
 pub type QueryParameters = Vec<QueryParameter>;
 
-/// Abstraction of a query against the OpenWeatherMap API.
+/// Abstraction of a query against the `OpenWeatherMap` API.
 pub trait Query: fmt::Debug + fmt::Display + Send + Sync {
-    /// Used in logging and included as a label in metrics published by openweathermap_exporter
+    /// Used in logging and included as a label in metrics published by `openweathermap_exporter`
     fn get_display_name(&self) -> &Option<String>;
     /// Query parameters and values that must be added to API call URL.
     fn query_params(&self) -> QueryParameters;
@@ -89,7 +89,7 @@ mod tests {
     fn city_id_query() -> (CityId, Vec<QueryParameter>) {
         (
             CityId {
-                id: 3665202,
+                id: 3_665_202,
                 display_name: None,
             },
             vec![("id", "3665202".to_owned())],

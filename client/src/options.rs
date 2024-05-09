@@ -30,7 +30,7 @@ impl ClientOptions {
     pub fn default_api_key() -> String {
         match std::env::var("API_KEY") {
             Ok(api_key) => api_key,
-            Err(_) => "".to_string(),
+            Err(_) => String::new(),
         }
     }
 
@@ -39,7 +39,7 @@ impl ClientOptions {
         "en".to_string()
     }
 
-    /// Defaults to [UnitSystem::Metric]
+    /// Defaults to [`UnitSystem::Metric`]
     pub fn default_units() -> UnitSystem {
         UnitSystem::Metric
     }
@@ -49,7 +49,10 @@ impl ClientOptions {
         mask(&self.api_key)
     }
 
-    /// Ensures an api_key is provided
+    /// Ensures an `api_key` is provided
+    ///
+    /// # Errors
+    /// Errors that cannot be validated during input parsing.
     pub fn validate(&self) -> Result<(), InvalidOptionsError> {
         if self.api_key.is_empty() {
             return Err(InvalidOptionsError {
@@ -60,14 +63,14 @@ impl ClientOptions {
         Ok(())
     }
 
-    /// Take an arbitrary string that might have the self.api_key in it and returns a string with that all occurrences of the key masked.
+    /// Take an arbitrary string that might have the `self.api_key` in it and returns a string with that all occurrences of the key masked.
     pub fn mask_api_key_if_present(&self, any_string: &str) -> String {
         any_string.replace(&self.api_key, &self.masked_api_key())
     }
 }
 
 impl Default for ClientOptions {
-    /// Useful for creating options with an API Key specified in the environment variable API_KEY and with defaults of "en", Metric, 1 call/sercond.
+    /// Useful for creating options with an API Key specified in the environment variable `API_KEY` and with defaults of "en", Metric, 1 call/sercond.
     fn default() -> Self {
         Self {
             api_key: Self::default_api_key(),
@@ -153,7 +156,7 @@ units: imperial
         };
         assert_eq!(options.api_key, "PLAINTEXT_API_KEY");
 
-        let debug = format!("{:?}", options);
+        let debug = format!("{options:?}");
         assert!(!debug.contains("PLAINTEXT"));
         assert!(debug.contains("PLA****"));
     }

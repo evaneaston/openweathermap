@@ -2,7 +2,6 @@ use log::{debug, error, info};
 use metrics::{describe_gauge, describe_histogram, gauge, histogram};
 use metrics_exporter_prometheus::PrometheusBuilder;
 use metrics_util::MetricKindMask;
-use std::iter::Iterator;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::{SystemTime, SystemTimeError};
@@ -12,6 +11,7 @@ use tokio::time::{interval, Duration, Interval, MissedTickBehavior};
 use openweathermap_client::models::CurrentWeather;
 use openweathermap_client::{Client, Query};
 
+#[allow(clippy::wildcard_imports)]
 use crate::metric_metadata::*;
 
 use crate::ExporterConfig;
@@ -25,13 +25,16 @@ pub struct Exporter {
 }
 
 impl Exporter {
-    /// Creates a new exporter for the provided [ExporterConfig].  Will fail if
-    /// [openweathermap_client::Client::new] fails or if there are no cities, coordinates
+    /// Creates a new exporter for the provided [`ExporterConfig`].  Will fail if
+    /// [`openweathermap_client::Client::new`] fails or if there are no cities, coordinates
     /// or locations specified.
+    ///
+    /// # Errors
+    /// If there is a problem configuring the exporter.
     pub fn new(config: ExporterConfig) -> Result<Exporter, ExporterError> {
         config.validate()?;
 
-        let rate_limit_duration_millis = (60000. / (config.max_calls_per_minute as f32)).round() as u64;
+        let rate_limit_duration_millis = (60000_u64 * 1000_u64 / u64::from(config.max_calls_per_minute)) / 1000_u64;
         let mut rate_limiter = interval(Duration::from_millis(rate_limit_duration_millis));
         rate_limiter.set_missed_tick_behavior(MissedTickBehavior::Delay);
 
@@ -44,7 +47,10 @@ impl Exporter {
 
     /// Starts the exporter and the polling loop. It will return an error if the
     /// http server fails to start. But once started, should never return.  Any failing
-    /// API calls will simply be logged with the [log::Level::Error] log level.
+    /// API calls will simply be logged with the [`log::Level::Error`] log level.
+    ///
+    /// # Errors
+    /// If the exporter cannot be initialized.
     pub async fn run(&mut self) -> Result<(), ExporterError> {
         info!("Starting");
         info!("config={:?}", self.config);
@@ -76,7 +82,7 @@ impl Exporter {
                     Ok(reading) => self.update_metrics_for_successful_query(query, &reading),
                     Err(e) => {
                         self.update_metrics_for_failed_query(query);
-                        error!("Error reading weather for {:?}. Error: {:?}", query, e)
+                        error!("Error reading weather for {:?}. Error: {:?}", query, e);
                     }
                 };
             }
@@ -125,19 +131,21 @@ impl Exporter {
         self.update_query_success_metrics(query, false);
     }
 
+    #[allow(clippy::unused_self)]
     fn update_query_success_metrics(&self, query: &dyn Query, success: bool) {
         let labels = labels_for_query(query);
         gauge!(OWM_QUERY_SUCCESS.name(), &labels).set(if success { 1. } else { 0. });
     }
 
+    #[allow(clippy::unused_self)]
     fn describe_call_metrics(&self) {
         describe_histogram!(OWM_API_CALL_TIME_HIST.name(), OWM_API_CALL_TIME_HIST.description());
     }
 
     fn describe_current_weather_metrics(&self) {
-        let units = &self.config.owm.units;
+        let units = self.config.owm.units;
 
-        vec![
+        for m in [
             OWM_QUERY_SUCCESS,
             OWM_TIMESTAMP_SECONDS,
             owm_temperature(units),
@@ -153,16 +161,15 @@ impl Exporter {
             OWM_RAIN_3H,
             OWM_SNOW_1H,
             OWM_SNOW_3H,
-        ]
-        .into_iter()
-        .for_each(|m| {
+        ] {
             describe_gauge!(m.name(), m.description());
-        });
+        }
     }
 
     fn write_reading_values(&self, reading: &CurrentWeather, labels: &Vec<(&'static str, String)>) {
-        let units = &self.config.owm.units;
+        let units = self.config.owm.units;
 
+        #[allow(clippy::cast_precision_loss)] // precision loss is not going to matter in anyone's lifetime
         gauge!(OWM_TIMESTAMP_SECONDS.name(), labels).set(reading.dt as f64);
 
         gauge!(owm_temperature(units).name(), labels).set(reading.main.temp);
@@ -175,6 +182,8 @@ impl Exporter {
             gauge!(owm_wind_gust(units).name(), labels).set(gust);
         }
         gauge!(OWM_CLOUDINESS_PERCENT.name(), labels).set(reading.clouds.cloudiness);
+
+        #[allow(clippy::cast_precision_loss)] // precision loss is not going to matter in anyone's lifetime
         gauge!(OWM_VISIBILITY.name(), labels).set(reading.visibility as f64);
 
         if let Some(pv) = &reading.rain {
@@ -199,7 +208,9 @@ impl Exporter {
 
 fn update_call_time_metrics(call_duration: &Result<Duration, SystemTimeError>) {
     if let Ok(duration) = call_duration {
-        histogram!(OWM_API_CALL_TIME_HIST.name()).record(duration.as_millis() as f64);
+        #[allow(clippy::cast_precision_loss)]
+        // precision loss unimportantwe onlu really coare for values in a range of about 10^8 microseconds
+        histogram!(OWM_API_CALL_TIME_HIST.name()).record(duration.as_micros() as f64 / 1000.);
     }
 }
 

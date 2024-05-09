@@ -44,11 +44,11 @@ pub struct City {
     /// An [ISO 3166-1](https://en.wikipedia.org/wiki/ISO_3166-1) 2-character country code
     pub country_code: String,
 
-    /// When available will be rendered by [Display] instead of the name, country_code.
+    /// When available will be rendered by [Display] instead of the `name`, `country_code`.
     pub display_name: Option<String>,
 }
 impl City {
-    /// Create an instance with just name and country_code
+    /// Create an instance with just `name` and `country_code`
     pub fn new(name: &str, country_code: &str) -> City {
         City {
             name: name.to_string(),
@@ -61,7 +61,7 @@ impl City {
 impl Display for City {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match &self.display_name {
-            Some(display_name) => write!(f, "{}", display_name),
+            Some(display_name) => write!(f, "{display_name}"),
             None => write!(f, "{}, {}", self.name, self.country_code),
         }
     }
@@ -84,7 +84,7 @@ impl CityId {
 impl Display for CityId {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match &self.display_name {
-            Some(display_name) => write!(f, "{}", display_name),
+            Some(display_name) => write!(f, "{display_name}"),
             None => write!(f, "{}", self.id),
         }
     }
@@ -113,20 +113,22 @@ impl Coord {
 impl Display for Coord {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match &self.display_name {
-            Some(display_name) => write!(f, "{}", display_name),
+            Some(display_name) => write!(f, "{display_name}"),
             None => write!(f, "lat={}, lon={}", self.lat, self.lon),
         }
     }
 }
 
-/// Main structure for responses from the free OpenWeatherMap API.
+/// Main structure for responses from the free `OpenWeatherMap` API
+///
+/// See their API response documenation [here](https://openweathermap.org/current#fields_json).
 #[derive(Debug, Deserialize)]
 pub struct CurrentWeather {
     /// City geo location, longitude
     pub coord: Coord,
     /// Seems to generally be a collection of one
     pub weather: Vec<Weather>,
-    /// OpenWeatherMap documents as "Internal parameter"
+    /// `OpenWeatherMap` documents as "Internal parameter"
     pub base: String,
 
     /// Main readings that are usually present in responses.  See [Main].
@@ -142,7 +144,7 @@ pub struct CurrentWeather {
     pub rain: Option<PrecipVolume>,
     /// Recent snow volume
     pub snow: Option<PrecipVolume>,
-    /// Time of data calculation, unix, UTC
+    /// Time of data calculation, unix, UTC (in seconds)
     pub dt: i64,
     /// See [Sys]
     pub sys: Sys,
@@ -180,7 +182,7 @@ pub struct Main {
     pub temp_min: f64,
     /// Maximum temperature at the moment. This is maximal currently observed temperature (within large megalopolises and urban areas). Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
     pub temp_max: f64,
-    /// Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa
+    /// Atmospheric pressure (on the sea level, if there is no `sea_level` or `grnd_level` data), hPa
     pub pressure: f64,
     /// Atmospheric pressure on the sea level, hPa
     pub sea_level: Option<f64>,

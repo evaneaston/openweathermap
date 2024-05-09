@@ -63,7 +63,7 @@ pub const OWM_VISIBILITY: &MetricMetadata = &new_metric("owm_visibility_meters",
 pub const OWM_WIND_DIRECTION: &MetricMetadata =
     &new_metric("owm_wind_direction_degrees", "Wind direction in degrees (0-360)");
 
-pub fn owm_temperature(units: &UnitSystem) -> &'static MetricMetadata<'static> {
+pub fn owm_temperature(units: UnitSystem) -> &'static MetricMetadata<'static> {
     match units {
         UnitSystem::Standard => OWM_TEMPERATURE_DEGREES_KELVIN,
         UnitSystem::Metric => OWM_TEMPERATURE_DEGREES_CELSIUS,
@@ -71,7 +71,7 @@ pub fn owm_temperature(units: &UnitSystem) -> &'static MetricMetadata<'static> {
     }
 }
 
-pub fn owm_temperature_feels_like(units: &UnitSystem) -> &'static MetricMetadata<'static> {
+pub fn owm_temperature_feels_like(units: UnitSystem) -> &'static MetricMetadata<'static> {
     match units {
         UnitSystem::Standard => OWM_TEMPERATURE_FEELS_LIKE_DEGREES_KELVIN,
         UnitSystem::Metric => OWM_TEMPERATURE_FEELS_LIKE_DEGREES_CELSIUS,
@@ -79,14 +79,14 @@ pub fn owm_temperature_feels_like(units: &UnitSystem) -> &'static MetricMetadata
     }
 }
 
-pub fn owm_wind_gust(units: &UnitSystem) -> &'static MetricMetadata<'static> {
+pub fn owm_wind_gust(units: UnitSystem) -> &'static MetricMetadata<'static> {
     match units {
         UnitSystem::Imperial => OWM_WIND_GUST_MILES_PER_HOUR,
         _ => OWM_WIND_GUST_METERS_PER_SECOND,
     }
 }
 
-pub fn owm_wind_speed(units: &UnitSystem) -> &'static MetricMetadata<'static> {
+pub fn owm_wind_speed(units: UnitSystem) -> &'static MetricMetadata<'static> {
     match units {
         UnitSystem::Imperial => OWM_WIND_SPEED_MILES_PER_HOUR,
         _ => OWM_WIND_SPEED_METERS_PER_SECOND,

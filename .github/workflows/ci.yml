@@ -51,7 +51,7 @@ jobs:
       - run: cargo test
 
   format:
-    name: Format Check
+    name: Format Check And Linting
     needs: pre_ci
     runs-on: ubuntu-latest
     if: github.event_name != 'pull_request'
@@ -59,6 +59,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo fmt -- --check
+      - run: cargo clippy
 
   # outdated:
   #   name: Outdated

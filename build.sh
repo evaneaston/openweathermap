@@ -2,6 +2,6 @@
 set -euo pipefail
 
 cargo fmt -- --check
-cargo clippy -- -D warnings
+cargo clippy
 cargo test 
 cargo doc

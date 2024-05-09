@@ -50,7 +50,7 @@ impl ListenOptions {
                 }
             }
             Err(VarError::NotPresent) => default_address(),
-            Err(VarError::NotUnicode(e)) => panic!("Unable to load environment variable {env_var}. {:?}", e),
+            Err(VarError::NotUnicode(e)) => panic!("Unable to load environment variable {env_var}. {e:?}"),
         }
     }
 
@@ -71,7 +71,7 @@ impl ListenOptions {
                 }
             }
             Err(VarError::NotPresent) => default_port,
-            Err(VarError::NotUnicode(e)) => panic!("Unable to load environment variable {env_var}. {:?}", e),
+            Err(VarError::NotUnicode(e)) => panic!("Unable to load environment variable {env_var}. {e:?}"),
         }
     }
 }
@@ -126,12 +126,12 @@ impl ExporterConfig {
     ///
     /// Searches for the first file from the following list.  Once found stops, and loads it.
     ///
-    ///  * ./owm_exporter.yaml
-    ///  * ./owm_exporter.yml
-    ///  * ./owm_exporter.json
-    ///  * ~/owm_exporter.yaml
-    ///  * ~/owm_exporter.yml
-    ///  * ~/owm_exporter.json
+    ///  * `./owm_exporter.yaml`
+    ///  * `./owm_exporter.yml`
+    ///  * `./owm_exporter.json`
+    ///  * `~/owm_exporter.yaml`
+    ///  * `~/owm_exporter.yml`
+    ///  * `~/owm_exporter.json`
     ///
     /// # Config File Format
     ///
@@ -142,6 +142,8 @@ impl ExporterConfig {
     /// ```rust
     /// let config = Config::load();
     /// ```
+    /// # Errors
+    /// If the file is missing, cannot be read, contains a syntax error contains invalid values.
     ///
     pub fn load() -> Result<ExporterConfig, ExporterError> {
         let path = Self::find_config_file()?;
@@ -180,7 +182,7 @@ impl ExporterConfig {
             None => Err(ExporterError::ConfigNotFound {
                 message: format!(
                     "Could not locate any of the following config files {}.",
-                    join_paths(candidate_files, ", ")
+                    join_paths(&candidate_files, ", ")
                 ),
             }),
         }
@@ -202,7 +204,7 @@ impl ExporterConfig {
         }
 
         match self.owm.validate() {
-            Ok(_) => Ok(()),
+            Ok(()) => Ok(()),
             Err(e) => Err(ExporterError::ConfigValidationError {
                 message: "Owm Client Validation error".to_string(),
                 error: Some(e),
@@ -235,7 +237,7 @@ fn read_from_path(path: &PathBuf) -> Result<String, ExporterError> {
     }
 }
 
-fn join_paths(pbs: Vec<PathBuf>, separator: &str) -> String {
+fn join_paths(pbs: &[PathBuf], separator: &str) -> String {
     pbs.iter()
         .map(|pb| pb.to_string_lossy().to_string())
         .collect::<Vec<String>>()
