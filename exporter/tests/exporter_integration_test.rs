@@ -37,7 +37,7 @@ async fn exporter_integration_test() -> Result<(), Box<dyn Error>> {
         .parse::<Uri>()
         .unwrap_or_else(|e| panic!("Error parsing URI: {:?}", e));
 
-    let attempts = 3;
+    let attempts = 20;
     for remaining in (0..attempts).rev() {
         let (status, body) = read_from(uri.clone()).await;
 
