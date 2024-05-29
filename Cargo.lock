@@ -861,10 +861,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "metrics-exporter-prometheus"
-version = "0.14.0"
+name = "metrics"
+version = "0.23.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d58e362dc7206e9456ddbcdbd53c71ba441020e62104703075a69151e38d85f"
+checksum = "884adb57038347dfbaf2d5065887b6cf4312330dc8e94bc30a1a839bd79d3261"
+dependencies = [
+ "ahash",
+ "portable-atomic",
+]
+
+[[package]]
+name = "metrics-exporter-prometheus"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "26eb45aff37b45cff885538e1dcbd6c2b462c04fe84ce0155ea469f325672c98"
 dependencies = [
  "base64 0.22.0",
  "http-body-util",
@@ -873,8 +883,8 @@ dependencies = [
  "hyper-util",
  "indexmap 2.2.5",
  "ipnet",
- "metrics",
- "metrics-util",
+ "metrics 0.23.0",
+ "metrics-util 0.17.0",
  "quanta",
  "thiserror",
  "tokio",
@@ -892,11 +902,26 @@ dependencies = [
  "crossbeam-utils",
  "hashbrown 0.14.3",
  "indexmap 2.2.5",
- "metrics",
+ "metrics 0.22.3",
  "num_cpus",
  "ordered-float",
  "quanta",
  "radix_trie",
+ "sketches-ddsketch",
+]
+
+[[package]]
+name = "metrics-util"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4259040465c955f9f2f1a4a8a16dc46726169bca0f88e8fb2dbeced487c3e828"
+dependencies = [
+ "crossbeam-epoch",
+ "crossbeam-utils",
+ "hashbrown 0.14.3",
+ "metrics 0.23.0",
+ "num_cpus",
+ "quanta",
  "sketches-ddsketch",
 ]
 
@@ -1093,9 +1118,9 @@ dependencies = [
  "hyper",
  "hyper-util",
  "log",
- "metrics",
+ "metrics 0.22.3",
  "metrics-exporter-prometheus",
- "metrics-util",
+ "metrics-util 0.16.3",
  "openweathermap_client",
  "serde",
  "serde_with",
