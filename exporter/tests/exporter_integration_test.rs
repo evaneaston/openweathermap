@@ -23,6 +23,7 @@ async fn exporter_integration_test() -> Result<(), Box<dyn Error>> {
         .env("LISTEN_ADDRESS", "127.0.0.1")
         .env("LISTEN_PORT", port.to_string())
         .env("RUST_BACKTRACE", "1")
+        .env("RUST_LOG", "info")
         .args(Vec::<String>::new())
         .spawn()
         .expect("unable to start exporter");
