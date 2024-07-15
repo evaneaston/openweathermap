@@ -25,7 +25,7 @@ metrics-exporter-prometheus = { workspace = true, features = [ "http-listener" ]
 metrics-util                = { workspace = true }
 openweathermap_client       = { version = "0.4.0", path = "../client" }
 serde                       = { workspace = true, features = [ "derive" ] }
-serde_with                  = { workspace = true, features = [ "chrono", "macros" ] }
+serde_with                  = { workspace = true, features = [ "std" ] }
 serde_yaml                  = { workspace = true }
 thiserror                   = { workspace = true }
 tokio                       = { workspace = true, features = [ "macros", "net" ] }
