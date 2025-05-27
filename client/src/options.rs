@@ -1,8 +1,5 @@
 use serde::Deserialize;
-use std::{
-    cmp::{max, min},
-    fmt,
-};
+use std::fmt;
 
 use crate::error::InvalidOptionsError;
 
@@ -28,10 +25,7 @@ pub struct ClientOptions {
 impl ClientOptions {
     // Defaults to the API_KEY environment variable or blank if the env var is not defined.
     pub fn default_api_key() -> String {
-        match std::env::var("API_KEY") {
-            Ok(api_key) => api_key,
-            Err(_) => String::new(),
-        }
+        std::env::var("API_KEY").unwrap_or_default()
     }
 
     /// Defaults to "en"
@@ -83,7 +77,7 @@ impl Default for ClientOptions {
 fn mask(s: &str) -> String {
     let mut masked: String = s.to_string();
     if !s.is_empty() {
-        let range = max(0, min(masked.len() - 1, 3))..;
+        let range = (masked.len() - 1).clamp(0, 3)..;
         masked.replace_range(range, "****");
     }
     masked
