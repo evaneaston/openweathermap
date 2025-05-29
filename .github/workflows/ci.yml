@@ -39,7 +39,7 @@ jobs:
           - os: ubuntu-latest
             rust: beta
           - os: ubuntu-latest
-            rust: 1.71.0
+            rust: 1.82.0
 
     steps:
       - uses: actions/checkout@v4
@@ -53,24 +53,15 @@ jobs:
   format:
     name: Format Check And Linting
     needs: pre_ci
+    if: needs.pre_ci.outputs.continue
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: "rustfmt,clippy"
       - run: cargo fmt -- --check
       - run: cargo clippy
-
-  # outdated:
-  #   name: Outdated
-  #   needs: pre_ci
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name != 'pull_request'
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: dtolnay/rust-toolchain@stable
-  #     - uses: dtolnay/install@cargo-outdated
-  #     - run: cargo outdated --workspace --exit-code 1
 
   doc:
     name: Documentation

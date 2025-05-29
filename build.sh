@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cargo fmt -- --check
-cargo clippy
+# Approximate the tasks used in the ci workflow
+
 cargo test 
-cargo doc
+cargo +nightly fmt -- --check
+cargo +nightly clippy
+cargo +nightly doc
