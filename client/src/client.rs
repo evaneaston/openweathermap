@@ -106,7 +106,7 @@ impl Client {
     async fn handle_200_response(&self, response_body: Response<Incoming>) -> Result<CurrentWeather, ApiCallError> {
         let body = response_body_as_str(response_body).await?;
 
-        trace!("Response: {}", body);
+        trace!("Response: {body}");
         match serde_yaml::from_str::<CurrentWeather>(&body) {
             Ok(weather) => Ok(weather),
             Err(e) => Err(ApiCallError::ResponseParseError(e)),
