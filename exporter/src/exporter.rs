@@ -70,7 +70,7 @@ impl Exporter {
             for query in self.config.query_iterator() {
                 self.slow_down().await;
 
-                info!("Getting weather for {:?}", query);
+                info!("Getting weather for {query:?}");
 
                 let start = SystemTime::now();
                 let reading = self.client.fetch_weather(query).await;
@@ -82,9 +82,9 @@ impl Exporter {
                     Ok(reading) => self.update_metrics_for_successful_query(query, &reading),
                     Err(e) => {
                         self.update_metrics_for_failed_query(query);
-                        error!("Error reading weather for {:?}. Error: {:?}", query, e);
+                        error!("Error reading weather for {query:?}. Error: {e:?}");
                     }
-                };
+                }
             }
 
             poll_interval.tick().await;
@@ -105,7 +105,7 @@ impl Exporter {
             .with_http_listener(SocketAddr::new(listen_address, port))
             .install()?;
 
-        info!("Listening on {:?}:{:?}", listen_address, port);
+        info!("Listening on {listen_address:?}:{port}");
 
         self.describe_call_metrics();
         self.describe_current_weather_metrics();
@@ -114,10 +114,7 @@ impl Exporter {
     }
 
     fn update_metrics_for_successful_query(&self, query: &dyn Query, reading: &CurrentWeather) {
-        debug!(
-            "updating metrics for successful query {:?} with reading {:?}",
-            query, reading
-        );
+        debug!("updating metrics for successful query {query:?} with reading {reading:?}");
 
         self.update_query_success_metrics(query, true);
 
@@ -126,7 +123,7 @@ impl Exporter {
     }
 
     fn update_metrics_for_failed_query(&self, query: &dyn Query) {
-        debug!("updating metrics for failed query {:?}", query);
+        debug!("updating metrics for failed query {query:?}");
 
         self.update_query_success_metrics(query, false);
     }

@@ -85,7 +85,7 @@ pub struct ExporterConfig {
     #[serde(default = "ListenOptions::default")]
     pub listen: ListenOptions,
 
-    /// Configures the [openweathermap_client::Client] used by the exporter.
+    /// Configures the [`openweathermap_client::Client`] used by the exporter.
     #[serde(default = "ClientOptions::default")]
     pub owm: ClientOptions,
 
@@ -107,7 +107,7 @@ pub struct ExporterConfig {
     #[serde(default = "Vec::new")]
     pub coordinates: Vec<Coord>,
 
-    /// The [CityId]s to query weather for.
+    /// The [`CityId`]s to query weather for.
     #[serde(default = "Vec::new")]
     pub locations: Vec<CityId>,
 }
@@ -157,7 +157,7 @@ impl ExporterConfig {
         match serde_yaml::from_str::<ExporterConfig>(contents) {
             Ok(config) => Ok(config),
             Err(e) => {
-                error!("Error {:?}", e);
+                error!("Error {e:?}");
                 Err(ExporterError::ConfigFormatError {
                     path: path.to_string_lossy().to_string(),
                     error: e,
@@ -175,7 +175,7 @@ impl ExporterConfig {
             .flat_map(|pb| candidates.iter().map(|file| pb.as_path().join(*file)))
             .collect();
 
-        log::debug!("candidate files {:?}", candidate_files);
+        log::debug!("candidate files {candidate_files:?}");
 
         match candidate_files.iter().find(|f| f.exists() && f.is_file()) {
             Some(pb) => Ok(pb.clone()),
@@ -228,12 +228,10 @@ impl ExporterConfig {
 fn read_from_path(path: &PathBuf) -> Result<String, ExporterError> {
     match std::fs::read_to_string(path) {
         Ok(contents) => Ok(contents),
-        Err(e) => {
-            return Err(ExporterError::ConfigReadError {
-                path: path.to_string_lossy().to_string(),
-                error: e,
-            })
-        }
+        Err(e) => Err(ExporterError::ConfigReadError {
+            path: path.to_string_lossy().to_string(),
+            error: e,
+        }),
     }
 }
 
