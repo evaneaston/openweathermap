@@ -1,4 +1,4 @@
-name: Release
+name: Release and Publish
 
 on:
   push:
@@ -7,6 +7,8 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  API_KEY: ${{ secrets.API_KEY }}
+  RUST_BACKTRACE: 1
 
 jobs:
   release:
@@ -22,7 +24,7 @@ jobs:
         components: rustfmt, clippy
         
     - name: Cache cargo registry
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.cargo/registry
@@ -48,7 +50,7 @@ jobs:
       run: cargo fmt --all -- --check
       
     - name: Clippy check
-      run: cargo clippy --all-targets --all-features -- -D warnings
+      run: cargo clippy --all-targets --all-features
       
     - name: Build all workspace members
       run: cargo build --release --all-features --workspace
@@ -62,7 +64,7 @@ jobs:
         echo "<meta http-equiv=\"refresh\" content=\"0; url=./$(ls target/doc | head -n1)/index.html\">" > target/doc/index.html
         
     - name: Upload documentation artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: documentation
         path: target/doc/

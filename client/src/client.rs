@@ -109,7 +109,10 @@ impl Client {
         trace!("Response: {body}");
         match serde_yaml::from_str::<CurrentWeather>(&body) {
             Ok(weather) => Ok(weather),
-            Err(e) => Err(ApiCallError::ResponseParseError(e)),
+            Err(e) => Err(ApiCallError::ResponseParseError {
+                source: e,
+                content: body,
+            }),
         }
     }
 

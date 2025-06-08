@@ -181,7 +181,9 @@ impl Exporter {
         gauge!(OWM_CLOUDINESS_PERCENT.name(), labels).set(reading.clouds.cloudiness);
 
         #[allow(clippy::cast_precision_loss)] // precision loss is not going to matter in anyone's lifetime
-        gauge!(OWM_VISIBILITY.name(), labels).set(reading.visibility as f64);
+        if let Some(visibility) = reading.visibility {
+            gauge!(OWM_VISIBILITY.name(), labels).set(f64::from(visibility));
+        }
 
         if let Some(pv) = &reading.rain {
             if let Some(mm) = pv.one_hour {

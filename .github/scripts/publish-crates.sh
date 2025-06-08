@@ -57,7 +57,7 @@ publish_crate() {
     cd "$crate_path"
     
     echo "Running cargo publish for $crate_name..."
-    if cargo publish --token "$CARGO_REGISTRY_TOKEN"; then
+    if cargo publish --token "$CARGO_REGISTRY_TOKEN" -p "$crate_name" ; then
         echo "✓ Successfully published $crate_name@$version"
         
         # Wait a bit for crates.io to update

@@ -44,43 +44,34 @@ check_cargo_version() {
     return 0
 }
 
-# Check root Cargo.toml
+# Check if this is a workspace or single crate project
 if [ -f "Cargo.toml" ]; then
-    check_cargo_version "Cargo.toml" "$TAG_VERSION"
-fi
-
-# Find and check all workspace member Cargo.toml files
-if [ -f "Cargo.toml" ]; then
-    # Extract workspace members from Cargo.toml
-    workspace_members=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_members[]' | cut -d' ' -f1)
-    
-    for member in $workspace_members; do
-        # Convert package name to likely directory path
-        member_dir=$(echo "$member" | sed 's/@.*//' | tr '-' '_')
+    if cargo metadata --format-version 1 --no-deps | jq -e '.workspace_root' > /dev/null 2>&1; then
+        echo "Detected workspace project - checking workspace members only"
         
-        # Try common locations for workspace member Cargo.toml
-        possible_paths=(
-            "$member_dir/Cargo.toml"
-            "crates/$member_dir/Cargo.toml"
-            "packages/$member_dir/Cargo.toml"
-            "libs/$member_dir/Cargo.toml"
-        )
+        # Get workspace member information using cargo metadata
+        workspace_info=$(cargo metadata --format-version 1 --no-deps)
         
-        found=false
-        for path in "${possible_paths[@]}"; do
-            if [ -f "$path" ]; then
-                check_cargo_version "$path" "$TAG_VERSION"
-                found=true
-                break
-            fi
+        # Check each workspace member
+        echo "$workspace_info" | jq -r '.packages[] | "\(.name) \(.manifest_path)"' | while read -r crate_name manifest_path; do
+            echo "Checking workspace member: $crate_name"
+            check_cargo_version "$manifest_path" "$TAG_VERSION"
         done
         
-        if [ "$found" = false ]; then
-            echo "Warning: Could not find Cargo.toml for workspace member: $member"
+        # Check if we found any workspace members
+        member_count=$(echo "$workspace_info" | jq -r '.packages | length')
+        if [ "$member_count" -eq 0 ]; then
+            echo "Warning: No workspace members found"
+        else
+            echo "Checked $member_count workspace member(s)"
         fi
-    done
+    else
+        echo "Detected single crate project - checking root Cargo.toml"
+        check_cargo_version "Cargo.toml" "$TAG_VERSION"
+    fi
 else
-    echo "No root Cargo.toml found - checking for standalone crate"
+    echo "Error: No Cargo.toml found in current directory"
+    exit 1
 fi
 
 echo "✓ All version checks passed!"

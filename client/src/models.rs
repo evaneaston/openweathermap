@@ -135,7 +135,7 @@ pub struct CurrentWeather {
     pub main: Main,
 
     /// Visibility, meter. The maximum value of the visibility is 10km
-    pub visibility: u64,
+    pub visibility: Option<u16>,
     /// See [Wind]
     pub wind: Wind,
     /// See [Clouds]

@@ -14,7 +14,7 @@ async fn main() -> Result<(), ClientError> {
 
     for query in v {
         let weather = client.fetch_weather(query.as_ref()).await?;
-        println!("The weather for {} is {:?}", query, weather);
+        println!("The weather for {query} is {weather:?}");
     }
     Ok(())
 }
