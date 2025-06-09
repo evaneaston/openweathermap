@@ -1,7 +1,7 @@
 [package]
 name         = "openweathermap_exporter"
 description  = "An aggregator that polls OpenWeatherMap free API data and exposes it in prometheus exposition format."
-version      = "0.5.0"
+version      = "0.6.0"
 rust-version = "1.82"
 edition      = "2021"
 authors      = [ "evaneaston" ]
@@ -23,7 +23,7 @@ log                         = { workspace = true }
 metrics                     = { workspace = true }
 metrics-exporter-prometheus = { workspace = true, features = [ "http-listener" ] }
 metrics-util                = { workspace = true }
-openweathermap_client       = { version = "0.5.0", path = "../client" }
+openweathermap_client       = { version = "0.6.0", path = "../client" }
 serde                       = { workspace = true, features = [ "derive" ] }
 serde_with                  = { workspace = true, features = [ "std" ] }
 serde_yaml                  = { workspace = true }

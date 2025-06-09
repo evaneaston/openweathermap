@@ -29,14 +29,14 @@ async fn exporter_integration_test() -> Result<(), Box<dyn Error>> {
         .expect("unable to start exporter");
 
     match child_process.wait_timeout(Duration::from_millis(1000)) {
-        Ok(Some(status)) => panic!("Exporter process exited prematurely with {}", status),
+        Ok(Some(status)) => panic!("Exporter process exited prematurely with {status}"),
         Ok(None) => (), // this is good, it's still running
-        Err(e) => panic!("Error waiting to see if child process is running or has ended: {}", e),
+        Err(e) => panic!("Error waiting to see if child process is running or has ended: {e}"),
     };
 
     let uri = format!("http://127.0.0.1:{port}")
         .parse::<Uri>()
-        .unwrap_or_else(|e| panic!("Error parsing URI: {:?}", e));
+        .unwrap_or_else(|e| panic!("Error parsing URI: {e:?}"));
 
     let attempts = 20;
     for remaining in (0..attempts).rev() {
@@ -91,12 +91,12 @@ async fn read_from(endpoint: Uri) -> (StatusCode, String) {
     let req = Request::builder()
         .uri(endpoint.to_string())
         .body(Empty::<Bytes>::new())
-        .unwrap_or_else(|e| panic!("Failed building request: {:?}", e));
+        .unwrap_or_else(|e| panic!("Failed building request: {e:?}"));
 
     let response = client
         .request(req)
         .await
-        .unwrap_or_else(|e| panic!("Failed requesting data from {endpoint}: {:?}", e));
+        .unwrap_or_else(|e| panic!("Failed requesting data from {endpoint}: {e:?}"));
 
     let status = response.status();
     let mut body = response
@@ -104,10 +104,10 @@ async fn read_from(endpoint: Uri) -> (StatusCode, String) {
         .collect()
         .await
         .map(Collected::aggregate)
-        .unwrap_or_else(|e| panic!("Error reading response: {:?}", e));
+        .unwrap_or_else(|e| panic!("Error reading response: {e:?}"));
 
     let body_string = String::from_utf8(body.copy_to_bytes(body.remaining()).to_vec())
-        .unwrap_or_else(|e| panic!("Error decoding response body: {:?}", e));
+        .unwrap_or_else(|e| panic!("Error decoding response body: {e:?}"));
 
     (status, body_string)
 }

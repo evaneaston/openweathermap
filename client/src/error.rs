@@ -40,10 +40,8 @@ pub enum ApiCallError {
     #[error("Error reading response. Error: {0:?}")]
     ResponseReadError(#[from] hyper::Error),
 
-    //  #[error("Error reading response. Error: {0:?}")]
-    //  ResponseReadError2(#[from]  (dyn hyper::body::Body as Body)::Error),
-    #[error("Error parsing response body.  Error: {0:?}")]
-    ResponseParseError(#[from] serde_yaml::Error),
+    #[error("Error parsing response body.  Error: {source:?}. Content: {content}")]
+    ResponseParseError { source: serde_yaml::Error, content: String },
 }
 
 #[derive(Debug)]

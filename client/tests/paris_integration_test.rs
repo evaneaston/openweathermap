@@ -11,7 +11,7 @@ async fn paris_integration_test() -> Result<(), ClientError> {
     let client = Client::new(options)?;
     let reading = client.fetch_weather(&City::new("Paris", "FR")).await?;
 
-    println!("{:?}", reading);
+    println!("{reading:?}");
 
     assert_eq!(reading.id, 2988507);
     assert_eq!(reading.name, "Paris");
