@@ -10,11 +10,28 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
+  # Prevents concurrent runs on the same branch to avoid resource conflicts
   pre_ci:
     uses: dtolnay/.github/.github/workflows/pre_ci.yml@master
 
+  log_run_info:
+    needs: pre_ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log run trigger and status
+        run: |
+          echo "::notice::CI triggered by: ${{ github.event_name }}"
+          echo "::notice::Ref: ${{ github.ref }}"
+          echo "::notice::Actor: ${{ github.actor }}"
+          if [ "${{ needs.pre_ci.outputs.continue }}" != "true" ]; then
+            echo "::warning::Run skipped by pre_ci - likely due to concurrent execution prevention"
+          else
+            echo "::notice::Run will continue - no conflicts detected"
+          fi
+
   ensure_api_key_set:
     needs: pre_ci
+    if: needs.pre_ci.outputs.continue
     runs-on: ubuntu-latest
     steps:
       - if: ${{ env.API_KEY == '' }}
