@@ -1152,7 +1152,7 @@ dependencies = [
 
 [[package]]
 name = "openweathermap_exporter"
-version = "0.6.4"
+version = "0.6.5"
 dependencies = [
  "dirs",
  "env_logger",
