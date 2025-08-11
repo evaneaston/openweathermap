@@ -221,7 +221,7 @@ fn labels_for_query(query: &dyn Query) -> Vec<(&'static str, String)> {
 
 fn add_display_name(query: &dyn Query, labels: &mut Vec<(&'static str, String)>) {
     if let Some(display_name) = query.get_display_name() {
-        labels.push(("display_name", display_name.to_string()));
+        labels.push(("display_name", display_name.clone()));
     }
 }
 
@@ -231,7 +231,7 @@ fn labels_for(query: &dyn Query, reading: &CurrentWeather) -> Vec<(&'static str,
         None => &reading.name,
     };
 
-    let mut labels = vec![("location", location.to_string())];
+    let mut labels = vec![("location", location.clone())];
 
     labels.append(&mut query.query_params());
     add_display_name(query, &mut labels);
@@ -239,7 +239,7 @@ fn labels_for(query: &dyn Query, reading: &CurrentWeather) -> Vec<(&'static str,
     labels.push(("reading_id", reading.id.to_string()));
     labels.push(("reading_lat", reading.coord.lat.to_string()));
     labels.push(("reading_lon", reading.coord.lon.to_string()));
-    labels.push(("reading_name", reading.name.to_string()));
+    labels.push(("reading_name", reading.name.clone()));
 
     labels
 }
