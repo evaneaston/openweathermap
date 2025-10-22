@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.17](https://github.com/evaneaston/openweathermap/compare/openweathermap_exporter-v0.6.16...openweathermap_exporter-v0.6.17) - 2025-10-22
+## [0.7.0](https://github.com/evaneaston/openweathermap/compare/openweathermap_exporter-v0.6.16...openweathermap_exporter-v0.7.0) - 2025-10-22
 
 ### Other
 
