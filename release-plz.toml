@@ -9,3 +9,7 @@ name = "openweathermap_exporter"
 # via path dependency. When release-plz checks historical commits, `cargo package`
 # fails if the dependency version requirements don't match at that point in history.
 semver_check = false
+
+[[package]]
+name = "openweathermap_client"
+
