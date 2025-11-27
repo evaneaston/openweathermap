@@ -1,0 +1,11 @@
+# release-plz configuration
+# https://release-plz.dev/docs/config
+
+[workspace]
+
+[[package]]
+name = "openweathermap_exporter"
+# Disable semver check for exporter because it depends on openweathermap_client
+# via path dependency. When release-plz checks historical commits, `cargo package`
+# fails if the dependency version requirements don't match at that point in history.
+semver_check = false
