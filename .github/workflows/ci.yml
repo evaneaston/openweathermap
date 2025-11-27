@@ -59,7 +59,7 @@ jobs:
             rust: 1.82.0
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: ilammy/setup-nasm@v1
         if: matrix.os == 'windows-latest'
       - uses: dtolnay/rust-toolchain@master
@@ -73,7 +73,7 @@ jobs:
     if: needs.pre_ci.outputs.continue
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@nightly
         with:
           components: "rustfmt,clippy"
@@ -88,7 +88,7 @@ jobs:
     env:
       RUSTDOCFLAGS: -Dwarnings
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@nightly
       - uses: dtolnay/install@cargo-docs-rs
       - run: cargo docs-rs -p openweathermap_client 
