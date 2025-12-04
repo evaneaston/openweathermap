@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.5](https://github.com/evaneaston/openweathermap/compare/openweathermap_exporter-v0.7.4...openweathermap_exporter-v0.7.5) - 2025-12-04
+
+### Other
+
+- update Cargo.lock dependencies
+
 ## [0.7.4](https://github.com/evaneaston/openweathermap/compare/openweathermap_exporter-v0.7.3...openweathermap_exporter-v0.7.4) - 2025-11-29
 
 ### Other
